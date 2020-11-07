@@ -33,10 +33,13 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) transform.Translate(Vector3.left * movementSpeed);
         if (Input.GetKey(KeyCode.D)) transform.Translate(Vector3.right * movementSpeed);
 
-        yaw += rotationSpeedHorizontal * Input.GetAxis("Mouse X");
-        pitch -= rotationSpeedVertical * Input.GetAxis("Mouse Y");
+        if (Input.GetKey(KeyCode.Space))
+        {
+            yaw += rotationSpeedHorizontal * Input.GetAxis("Mouse X");
+            pitch -= rotationSpeedVertical * Input.GetAxis("Mouse Y");
 
-        transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
-        cameraTransform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+            transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
+            cameraTransform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+        }
     }
 }
