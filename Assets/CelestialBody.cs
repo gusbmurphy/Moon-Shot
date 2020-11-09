@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CelestialBody : MonoBehaviour
 {
-    public static float yAxisMass = 0.1f;
+    private float yAxisMass = 50f;
+    private float yAxisAttractionThreshold = 1.0f;
+    private float yAxisAttractionMaxForce = 5f;
     public float attractionDistance = 5f;
 
     private Rigidbody rb;
@@ -16,7 +18,7 @@ public class CelestialBody : MonoBehaviour
     private void FixedUpdate()
     {
         AttractBodies();
-        // if (transform.position.y < 0 || transform.position.y > 0) ApplyYAxisAttraction();
+        if (transform.position.y < -yAxisAttractionThreshold || transform.position.y > yAxisAttractionThreshold) ApplyYAxisAttraction();
     }
 
     private void AttractBodies()
@@ -36,6 +38,7 @@ public class CelestialBody : MonoBehaviour
         Vector3 direction = transform.position.y < 0 ? Vector3.up : Vector3.down;
         float distance = Mathf.Abs(transform.position.y);
         float forceMagnitude = (rb.mass * yAxisMass) / Mathf.Pow(distance, 2);
+        forceMagnitude = Mathf.Min(forceMagnitude, yAxisAttractionMaxForce);
         Vector3 force = direction * forceMagnitude;
 
         rb.AddForce(force);
@@ -46,7 +49,7 @@ public class CelestialBody : MonoBehaviour
     {
         Vector3 direction = rb.position - rbToAttract.position;
         float distance = direction.magnitude;
-        float forceMagnitude = (rb.mass * rbToAttract.mass) / Mathf.Pow(distance, 2);
+        float forceMagnitude = (rb.mass * rbToAttract.mass) * distance;
         Vector3 force = direction.normalized * forceMagnitude;
 
         rbToAttract.AddForce(force);
@@ -56,5 +59,8 @@ public class CelestialBody : MonoBehaviour
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, attractionDistance);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
     }
 }
