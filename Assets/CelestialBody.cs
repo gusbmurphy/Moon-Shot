@@ -5,7 +5,7 @@ using UnityEngine;
 public class CelestialBody : MonoBehaviour
 {
     private float yAxisMass = 50f;
-    private float yAxisAttractionThreshold = 1.0f;
+    private float yAxisAttractionThreshold = 0.25f;
     private float yAxisAttractionMaxForce = 5f;
     public float attractionDistance = 5f;
 

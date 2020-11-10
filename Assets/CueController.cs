@@ -8,6 +8,7 @@ public class CueController : MonoBehaviour
     public GameObject cue;
     public GameObject cueBall;
     public float strikeForce = 10f;
+    // public float stopZoneOffset = 0.25f;
 
     private new Camera camera;
     private Ray ray;
@@ -35,7 +36,7 @@ public class CueController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (MouseHasMoved() || !isStriking)
+        if (MouseHasMoved() && !isStriking)
         {
             ray = camera.ScreenPointToRay(Input.mousePosition);
 
@@ -49,14 +50,14 @@ public class CueController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !isStriking)
         {
             if (hit.transform == cueBall.transform)
             {
                 stopZone = new GameObject();
                 SphereCollider stopZoneCollider = stopZone.AddComponent<SphereCollider>();
                 stopZoneCollider.isTrigger = true;
-                stopZone.transform.position = cueBall.transform.position;
+                stopZone.transform.position = cueBall.transform.position /*+ (cue.transform.forward * stopZoneOffset)*/;
                 stopZone.transform.localScale = cueBall.transform.localScale;
                 stopZone.tag = "StopZone";
                 Strike();
