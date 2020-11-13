@@ -8,6 +8,8 @@ public class CueController : MonoBehaviour
     // public GameObject cue;
     public GameObject cueBall;
     public float strikeForce = 10f;
+    public GameObject strikePointMarker;
+    private GameObject markerInstance = null;
     // public float stopZoneOffset = 0.25f;
 
     private new Camera camera;
@@ -48,7 +50,20 @@ public class CueController : MonoBehaviour
                 if (hit.transform == cueBall.transform)
                 {
                     pointToStrike = hit.point;
+
+                    // "Lock" the point to strike into the XZ-plane
+                    pointToStrike.y = 0f;
+
+                    if (!markerInstance)
+                    {
+                        markerInstance = GameObject.Instantiate(strikePointMarker, pointToStrike, Quaternion.identity);
+                    } else
+                    {
+                        markerInstance.transform.position = pointToStrike;
+                    }
+
                     forceVector = (pointToStrike - cueBall.transform.position) * -strikeForce;
+                    markerInstance.transform.LookAt(cueBall.transform.position);
                     //cue.transform.position = hit.point;
                     //cue.transform.LookAt(cueBall.transform.position);
                 }
