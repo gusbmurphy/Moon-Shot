@@ -51,8 +51,12 @@ public class CueController : MonoBehaviour
                 {
                     pointToStrike = hit.point;
 
-                    // "Lock" the point to strike into the XZ-plane
-                    pointToStrike.y = 0f;
+                    //// "Lock" the point to strike into the XZ-plane
+                    //pointToStrike.y = 0f;
+                    //if((pointToStrike - cueBall.transform.position).magnitude < cueBall.GetComponent<SphereCollider>().radius)
+                    //{
+                    //    pointToStrike = (pointToStrike - cueBall.transform.position).normalized * cueBall.GetComponent<SphereCollider>().radius;
+                    //}
 
                     if (!markerInstance)
                     {
