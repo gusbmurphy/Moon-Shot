@@ -124,3 +124,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attractionDistance: 2
+  rb: {fileID: 6929877709051369859}

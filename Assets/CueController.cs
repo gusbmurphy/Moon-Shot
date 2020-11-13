@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CueController : MonoBehaviour
 {
-    public GameObject cue;
+    // public GameObject cue;
     public GameObject cueBall;
     public float strikeForce = 10f;
     // public float stopZoneOffset = 0.25f;
@@ -15,6 +15,8 @@ public class CueController : MonoBehaviour
     private RaycastHit hit;
     private bool isStriking = false;
     private GameObject stopZone;
+    private Vector3 pointToStrike;
+    private Vector3 forceVector;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +31,9 @@ public class CueController : MonoBehaviour
 
     private void Strike()
     {
-        Rigidbody cueRb = cue.GetComponentInChildren<Rigidbody>();
-        cueRb.AddForce(cue.transform.forward * strikeForce);
+        Rigidbody cueBallRb = cueBall.GetComponentInChildren<Rigidbody>();
+        cueBallRb.AddForceAtPosition(forceVector, pointToStrike);
+        //cueRb.AddForce(cue.transform.forward * strikeForce);
     }
 
     // Update is called once per frame
@@ -44,8 +47,10 @@ public class CueController : MonoBehaviour
             {
                 if (hit.transform == cueBall.transform)
                 {
-                    cue.transform.position = hit.point;
-                    cue.transform.LookAt(cueBall.transform.position);
+                    pointToStrike = hit.point;
+                    forceVector = (pointToStrike - cueBall.transform.position) * -strikeForce;
+                    //cue.transform.position = hit.point;
+                    //cue.transform.LookAt(cueBall.transform.position);
                 }
             }
         }

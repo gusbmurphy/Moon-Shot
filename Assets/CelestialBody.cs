@@ -9,7 +9,7 @@ public class CelestialBody : MonoBehaviour
     private float yAxisAttractionMaxForce = 5f;
     public float attractionDistance = 5f;
 
-    private Rigidbody rb;
+    public Rigidbody rb;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
