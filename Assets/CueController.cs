@@ -17,6 +17,7 @@ public class CueController : MonoBehaviour
     public GameObject cueBall;
     public float strikeForce = 10f;
     public StrikeMarker strikePointMarker;
+    public float dragForceSensitivity = 0.1f;
     private StrikeMarker markerInstance = null;
     private ControlStage controlStage = ControlStage.SetPosition;
     // public float stopZoneOffset = 0.25f;
@@ -59,7 +60,8 @@ public class CueController : MonoBehaviour
                 HandlePositionInput();
                 break;
             case ControlStage.SetForce:
-                HandleForceInput();
+                //HandleForceInput();
+                //strikePointMarker.allowForceManipulation = true;
                 break;
         }
     }
@@ -105,12 +107,12 @@ public class CueController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && markerInstance != null)
         {
             controlStage = ControlStage.SetForce;
+            markerInstance.allowForceAdjustment = true;
         }
     }
 
     private void HandleForceInput()
     {
-
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (!dragging)
@@ -136,7 +138,7 @@ public class CueController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Mouse0))
         {
-            markerInstance.IndicateForce((Input.mousePosition - initialMousePosition).magnitude);
+            //markerInstance.IndicateForce((Input.mousePosition - initialMousePosition).magnitude * dragForceSensitivity);
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
