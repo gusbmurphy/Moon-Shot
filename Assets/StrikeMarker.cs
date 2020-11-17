@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 public class StrikeMarker : MonoBehaviour
 {
     [SerializeField] private GameObject forceIndicator;
     public bool allowForceAdjustment = false;
     public float adjustmentRange = 2f;
+    public float adjustmentSensitivity = 0.1f;
 
     private bool dragging = false;
-    private Camera camera;
+    private Camera mainCamera;
     private Vector3 initialMousePosition;
     private Vector3 currentMousePosition;
     private Vector3 minimumAdjustmentPosition;
@@ -20,22 +22,63 @@ public class StrikeMarker : MonoBehaviour
     private Plane forwardPlane;
     private Vector3 hitPoint;
     private Ray ray;
-    private float currentAdjustment = 0f;
+    private float _currentAdjustment = 0f;
+    private LineRenderer lineRenderer;
+
+
+    public float CurrentAdjustment
+    {
+        get {
+
+            print("Hello!"); 
+            return _currentAdjustment; }
+        set 
+        {
+            _currentAdjustment = Mathf.Max(0f, value);
+            _currentAdjustment = Mathf.Min(1f, value);
+        }
+    }
+
+    private void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
+    public event Action CompleteSetup;
 
     public void IndicateForce(float force)
     {
         forceIndicator.transform.localScale = new Vector3(forceIndicator.transform.localScale.x, forceIndicator.transform.localScale.y, forceIndicator.transform.localScale.z * force);
     }
 
-    private void Start()
+    public void PositionIsSet()
     {
-        print("Start!");
-        camera = Camera.main;
+        allowForceAdjustment = true;
+        minimumAdjustmentPosition = forceIndicator.transform.position;
+        maximumAdjustmentPosition = forceIndicator.transform.position + -forceIndicator.transform.forward * adjustmentRange;
+        SetupLineRenderer();
     }
 
-    private void Awake()
+    private void SetupLineRenderer()
     {
-        print("Awake!");
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.material = new Material(Shader.Find("Standard"));
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPositions(new Vector3[2] { minimumAdjustmentPosition, maximumAdjustmentPosition } );
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.25f;
+
+        GradientColorKey[] colorKeys = new GradientColorKey[2];
+        colorKeys[0].color = Color.cyan;
+        colorKeys[0].time = 0.0f;
+        colorKeys[1].color = Color.red;
+        colorKeys[1].time = 1.0f;
+
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(colorKeys,
+            new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f) });
+
+        lineRenderer.colorGradient = gradient;
     }
 
     private void Update()
@@ -44,9 +87,7 @@ public class StrikeMarker : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                minimumAdjustmentPosition = forceIndicator.transform.position;
-                maximumAdjustmentPosition = forceIndicator.transform.position + -forceIndicator.transform.forward * adjustmentRange;
-                ray = camera.ScreenPointToRay(Input.mousePosition);
+                ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
@@ -70,7 +111,7 @@ public class StrikeMarker : MonoBehaviour
             if (Input.GetKey(KeyCode.Mouse0) && dragging)
             {
                 float enter;
-                ray = camera.ScreenPointToRay(Input.mousePosition);
+                ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
                 if (adjustmentPlane.Raycast(ray, out enter))
                 {
@@ -81,17 +122,19 @@ public class StrikeMarker : MonoBehaviour
                         float adjustmentMagnitude = (initialMousePosition - currentMousePosition).magnitude;
                         if (!forwardPlane.GetSide(currentMousePosition)) adjustmentMagnitude = -adjustmentMagnitude;
 
-                        currentAdjustment += adjustmentMagnitude;
-                        currentAdjustment = Mathf.Max(0f, currentAdjustment);
-                        currentAdjustment = Mathf.Min(1f, currentAdjustment);
-
-                        forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, currentAdjustment);
+                        CurrentAdjustment += adjustmentMagnitude * adjustmentSensitivity;
+                        print("adjustment in strikemarker: " + CurrentAdjustment);
+                        forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, CurrentAdjustment);
                         //forceIndicator.transform.position = initialForceIndicatorPosition + -forceIndicator.transform.forward * adjustmentMagnitude;
                     }
                 }
             }
 
-            if (Input.GetKeyUp(KeyCode.Mouse0)) dragging = false;
+            if (Input.GetKeyUp(KeyCode.Mouse0) && dragging)
+            {
+                dragging = false;
+                CompleteSetup();
+            }
         }
     }
 

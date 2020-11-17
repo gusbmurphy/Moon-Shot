@@ -348,7 +348,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cueBall: {fileID: 1741052699}
-  strikeForce: 2000
   strikePointMarker: {fileID: 8996701592650101805, guid: 535d75db70136e84e952f017c2622757,
     type: 3}
   dragForceSensitivity: 0.1
@@ -622,6 +621,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cue Ball
+      objectReference: {fileID: 0}
+    - target: {fileID: 6929877709051369860, guid: 0687af3b27b8f3c47a9503fe665dc92b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6929877709051369919, guid: 0687af3b27b8f3c47a9503fe665dc92b,
         type: 3}

@@ -15,9 +15,10 @@ public class CueController : MonoBehaviour
 {
     // public GameObject cue;
     public GameObject cueBall;
-    public float strikeForce = 10f;
+    //public float strikeForce = 10f;
     public StrikeMarker strikePointMarker;
     public float dragForceSensitivity = 0.1f;
+    public float baseForce = 3000f;
     private StrikeMarker markerInstance = null;
     private ControlStage controlStage = ControlStage.SetPosition;
     // public float stopZoneOffset = 0.25f;
@@ -43,10 +44,11 @@ public class CueController : MonoBehaviour
         return Input.GetAxis("Mouse X") < 0 || Input.GetAxis("Mouse X") > 0 || Input.GetAxis("Mouse Y") < 0 || Input.GetAxis("Mouse Y") > 0;
     }
 
-    private void Strike()
+    private void Strike(float force)
     {
+        print("Force: " + force);
         Rigidbody cueBallRb = cueBall.GetComponentInChildren<Rigidbody>();
-        cueBallRb.AddForceAtPosition(forceVector, pointToStrike);
+        cueBallRb.AddForceAtPosition(forceVector * force, pointToStrike);
         isStriking = true;
         //cueRb.AddForce(cue.transform.forward * strikeForce);
     }
@@ -63,6 +65,9 @@ public class CueController : MonoBehaviour
                 //HandleForceInput();
                 //strikePointMarker.allowForceManipulation = true;
                 break;
+            case ControlStage.Ready:
+                HandleForceInput();
+                break;
         }
     }
 
@@ -72,7 +77,7 @@ public class CueController : MonoBehaviour
         {
             ray = camera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, LayerMask.GetMask("Cue Ball")))
             {
                 if (hit.transform == cueBall.transform)
                 {
@@ -88,15 +93,16 @@ public class CueController : MonoBehaviour
                     if (!markerInstance)
                     {
                         //markerInstance = GameObject.Instantiate(strikePointMarker, pointToStrike, Quaternion.identity);
-                        markerInstance = GameObject.Instantiate<StrikeMarker>(strikePointMarker);
+                        markerInstance = Instantiate<StrikeMarker>(strikePointMarker);
                         markerInstance.transform.position = pointToStrike;
+                        markerInstance.CompleteSetup += HandleForceSetupCompletion;
                     }
                     else
                     {
                         markerInstance.transform.position = pointToStrike;
                     }
 
-                    forceVector = (pointToStrike - cueBall.transform.position) * -strikeForce;
+                    forceVector = (cueBall.transform.position - markerInstance.transform.position);
                     markerInstance.transform.LookAt(cueBall.transform.position);
                     //cue.transform.position = hit.point;
                     //cue.transform.LookAt(cueBall.transform.position);
@@ -107,33 +113,42 @@ public class CueController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && markerInstance != null)
         {
             controlStage = ControlStage.SetForce;
-            markerInstance.allowForceAdjustment = true;
+            markerInstance.PositionIsSet();
         }
+    }
+
+    private void HandleForceSetupCompletion()
+    {
+        print("Dear lord.");
+        controlStage = ControlStage.Ready;
     }
 
     private void HandleForceInput()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (!dragging)
-            {
-                print("Hello?");
-                ray = camera.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.transform == markerInstance.transform)
-                    {
-                        print("Here we are");
-                        dragging = true;
-                        initialMousePosition = Input.mousePosition;
-                        print(initialMousePosition);
-                    }
-                }
-            }
-            else
-            {
-                print("What's up.");
-            }
+            print("okay");
+            print("Current adjustment: " + markerInstance.CurrentAdjustment);
+            Strike(3000f * markerInstance.CurrentAdjustment);
+            //if (!dragging)
+            //{
+            //    print("Hello?");
+            //    ray = camera.ScreenPointToRay(Input.mousePosition);
+            //    if (Physics.Raycast(ray, out hit))
+            //    {
+            //        if (hit.transform == markerInstance.transform)
+            //        {
+            //            print("Here we are");
+            //            dragging = true;
+            //            initialMousePosition = Input.mousePosition;
+            //            print(initialMousePosition);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    print("What's up.");
+            //}
         }
 
         if (Input.GetKey(KeyCode.Mouse0))
@@ -143,7 +158,7 @@ public class CueController : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            dragging = false;
+            //dragging = false;
         }
         //if (Input.GetKeyDown(KeyCode.Mouse0) && !isStriking)
         //{
