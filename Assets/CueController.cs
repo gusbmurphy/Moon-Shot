@@ -13,27 +13,20 @@ public enum ControlStage
 
 public class CueController : MonoBehaviour
 {
-    // public GameObject cue;
     public GameObject cueBall;
-    //public float strikeForce = 10f;
     public StrikeMarker strikePointMarker;
     public float dragForceSensitivity = 0.1f;
     public float baseForce = 3000f;
     private StrikeMarker markerInstance = null;
     private ControlStage controlStage = ControlStage.SetPosition;
-    // public float stopZoneOffset = 0.25f;
 
     private new Camera camera;
     private Ray ray;
     private RaycastHit hit;
     private bool isStriking = false;
-    private GameObject stopZone;
     private Vector3 pointToStrike;
     private Vector3 forceVector;
-    private Vector3 initialMousePosition;
-    private bool dragging = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         camera = GetComponentInChildren<Camera>();
@@ -50,10 +43,8 @@ public class CueController : MonoBehaviour
         Rigidbody cueBallRb = cueBall.GetComponentInChildren<Rigidbody>();
         cueBallRb.AddForceAtPosition(forceVector * force, pointToStrike);
         isStriking = true;
-        //cueRb.AddForce(cue.transform.forward * strikeForce);
     }
 
-    // Update is called once per frame
     void Update()
     {
         switch (controlStage)
@@ -62,8 +53,6 @@ public class CueController : MonoBehaviour
                 HandlePositionInput();
                 break;
             case ControlStage.SetForce:
-                //HandleForceInput();
-                //strikePointMarker.allowForceManipulation = true;
                 break;
             case ControlStage.Ready:
                 HandleForceInput();
@@ -83,16 +72,8 @@ public class CueController : MonoBehaviour
                 {
                     pointToStrike = hit.point;
 
-                    //// "Lock" the point to strike into the XZ-plane
-                    //pointToStrike.y = 0f;
-                    //if((pointToStrike - cueBall.transform.position).magnitude < cueBall.GetComponent<SphereCollider>().radius)
-                    //{
-                    //    pointToStrike = (pointToStrike - cueBall.transform.position).normalized * cueBall.GetComponent<SphereCollider>().radius;
-                    //}
-
                     if (!markerInstance)
                     {
-                        //markerInstance = GameObject.Instantiate(strikePointMarker, pointToStrike, Quaternion.identity);
                         markerInstance = Instantiate<StrikeMarker>(strikePointMarker);
                         markerInstance.transform.position = pointToStrike;
                         markerInstance.CompleteSetup += HandleForceSetupCompletion;
@@ -104,8 +85,6 @@ public class CueController : MonoBehaviour
 
                     forceVector = (cueBall.transform.position - markerInstance.transform.position);
                     markerInstance.transform.LookAt(cueBall.transform.position);
-                    //cue.transform.position = hit.point;
-                    //cue.transform.LookAt(cueBall.transform.position);
                 }
             }
         }
@@ -127,59 +106,7 @@ public class CueController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            print("okay");
-            print("Current adjustment: " + markerInstance.CurrentAdjustment);
-            Strike(3000f * markerInstance.CurrentAdjustment);
-            //if (!dragging)
-            //{
-            //    print("Hello?");
-            //    ray = camera.ScreenPointToRay(Input.mousePosition);
-            //    if (Physics.Raycast(ray, out hit))
-            //    {
-            //        if (hit.transform == markerInstance.transform)
-            //        {
-            //            print("Here we are");
-            //            dragging = true;
-            //            initialMousePosition = Input.mousePosition;
-            //            print(initialMousePosition);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    print("What's up.");
-            //}
-        }
-
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
-            //markerInstance.IndicateForce((Input.mousePosition - initialMousePosition).magnitude * dragForceSensitivity);
-        }
-
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            //dragging = false;
-        }
-        //if (Input.GetKeyDown(KeyCode.Mouse0) && !isStriking)
-        //{
-        //    if (hit.transform == cueBall.transform)
-        //    {
-        //        stopZone = new GameObject();
-        //        SphereCollider stopZoneCollider = stopZone.AddComponent<SphereCollider>();
-        //        stopZoneCollider.isTrigger = true;
-        //        stopZone.transform.position = cueBall.transform.position /*+ (cue.transform.forward * stopZoneOffset)*/;
-        //        stopZone.transform.localScale = cueBall.transform.localScale;
-        //        stopZone.tag = "StopZone";
-        //        Strike();
-        //    }
-        //}
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other == stopZone.GetComponent<Collider>())
-        {
-            print("In the stop zone.");
+            Strike(baseForce * markerInstance.CurrentAdjustment);
         }
     }
 }

@@ -17,21 +17,17 @@ public class StrikeMarker : MonoBehaviour
     private Vector3 currentMousePosition;
     private Vector3 minimumAdjustmentPosition;
     private Vector3 maximumAdjustmentPosition;
-    private Vector3 initialForceIndicatorPosition;
     private Plane adjustmentPlane;
     private Plane forwardPlane;
-    private Vector3 hitPoint;
     private Ray ray;
     private float _currentAdjustment = 0f;
     private LineRenderer lineRenderer;
 
+    public event Action CompleteSetup;
 
     public float CurrentAdjustment
     {
-        get {
-
-            print("Hello!"); 
-            return _currentAdjustment; }
+        get { return _currentAdjustment; }
         set 
         {
             _currentAdjustment = Mathf.Max(0f, value);
@@ -44,11 +40,13 @@ public class StrikeMarker : MonoBehaviour
         mainCamera = Camera.main;
     }
 
-    public event Action CompleteSetup;
-
     public void IndicateForce(float force)
     {
-        forceIndicator.transform.localScale = new Vector3(forceIndicator.transform.localScale.x, forceIndicator.transform.localScale.y, forceIndicator.transform.localScale.z * force);
+        forceIndicator.transform.localScale = new Vector3(
+            forceIndicator.transform.localScale.x,
+            forceIndicator.transform.localScale.y, 
+            forceIndicator.transform.localScale.z * force
+            );
     }
 
     public void PositionIsSet()
@@ -94,7 +92,6 @@ public class StrikeMarker : MonoBehaviour
                     if (hit.transform == forceIndicator.transform)
                     {
                         dragging = true;
-                        initialForceIndicatorPosition = forceIndicator.transform.position;
                         adjustmentPlane = new Plane(forceIndicator.transform.up, forceIndicator.transform.position);
                         forwardPlane = new Plane(-forceIndicator.transform.forward, forceIndicator.transform.position);
 
@@ -125,7 +122,6 @@ public class StrikeMarker : MonoBehaviour
                         CurrentAdjustment += adjustmentMagnitude * adjustmentSensitivity;
                         print("adjustment in strikemarker: " + CurrentAdjustment);
                         forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, CurrentAdjustment);
-                        //forceIndicator.transform.position = initialForceIndicatorPosition + -forceIndicator.transform.forward * adjustmentMagnitude;
                     }
                 }
             }
