@@ -65,27 +65,30 @@ public class CueController : MonoBehaviour
         if (MouseHasMoved() && !isStriking)
         {
             ray = camera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
 
-            if (Physics.Raycast(ray, out hit, LayerMask.GetMask("Cue Ball")))
+            if (Array.Exists(hits, hit => hit.collider.gameObject == cueBall))
             {
-                if (hit.transform == cueBall.transform)
+                hit = Array.Find(hits, hit => hit.collider.gameObject == cueBall);
+                pointToStrike = hit.point;
+
+                if (!markerInstance)
                 {
-                    pointToStrike = hit.point;
-
-                    if (!markerInstance)
-                    {
-                        markerInstance = Instantiate<StrikeMarker>(strikePointMarker);
-                        markerInstance.transform.position = pointToStrike;
-                        markerInstance.CompleteSetup += HandleForceSetupCompletion;
-                    }
-                    else
-                    {
-                        markerInstance.transform.position = pointToStrike;
-                    }
-
-                    forceVector = (cueBall.transform.position - markerInstance.transform.position);
-                    markerInstance.transform.LookAt(cueBall.transform.position);
+                    markerInstance = Instantiate<StrikeMarker>(strikePointMarker);
+                    markerInstance.transform.position = pointToStrike;
+                    markerInstance.CompleteSetup += HandleForceSetupCompletion;
                 }
+                else
+                {
+                    markerInstance.transform.position = pointToStrike;
+                }
+
+                forceVector = (cueBall.transform.position - markerInstance.transform.position);
+                markerInstance.transform.LookAt(cueBall.transform.position);
+            }
+            else
+            {
+                if (markerInstance != null) GameObject.Destroy(markerInstance.gameObject);
             }
         }
 
