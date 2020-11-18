@@ -351,6 +351,7 @@ MonoBehaviour:
   strikePointMarker: {fileID: 8996701592650101805, guid: 535d75db70136e84e952f017c2622757,
     type: 3}
   dragForceSensitivity: 0.1
+  baseForce: 3000
 --- !u!1001 &791548033
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ public class StrikeMarker : MonoBehaviour
 
     private bool dragging = false;
     private Camera mainCamera;
+    private Vector3 lastMousePosition;
     private Vector3 initialMousePosition;
     private Vector3 currentMousePosition;
     private Vector3 minimumAdjustmentPosition;
@@ -32,6 +33,7 @@ public class StrikeMarker : MonoBehaviour
         {
             _currentAdjustment = Mathf.Max(0f, value);
             _currentAdjustment = Mathf.Min(1f, value);
+            forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, CurrentAdjustment);
         }
     }
 
@@ -92,37 +94,16 @@ public class StrikeMarker : MonoBehaviour
                     if (hit.transform == forceIndicator.transform)
                     {
                         dragging = true;
-                        adjustmentPlane = new Plane(forceIndicator.transform.up, forceIndicator.transform.position);
-                        forwardPlane = new Plane(-forceIndicator.transform.forward, forceIndicator.transform.position);
-
-                        float enter;
-
-                        if (adjustmentPlane.Raycast(ray, out enter))
-                        {
-                            initialMousePosition = ray.GetPoint(enter);
-                        }
                     }
                 }
             }
 
             if (Input.GetKey(KeyCode.Mouse0) && dragging)
             {
-                float enter;
-                ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-                if (adjustmentPlane.Raycast(ray, out enter))
+                currentMousePosition = Input.mousePosition;
+                if (currentMousePosition != lastMousePosition)
                 {
-                    if (ray.GetPoint(enter) != currentMousePosition)
-                    {
-                        currentMousePosition = ray.GetPoint(enter);
-
-                        float adjustmentMagnitude = (initialMousePosition - currentMousePosition).magnitude;
-                        if (!forwardPlane.GetSide(currentMousePosition)) adjustmentMagnitude = -adjustmentMagnitude;
-
-                        CurrentAdjustment += adjustmentMagnitude * adjustmentSensitivity;
-                        print("adjustment in strikemarker: " + CurrentAdjustment);
-                        forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, CurrentAdjustment);
-                    }
+                    Vector3 mouseVelocity = currentMousePosition - lastMousePosition;
                 }
             }
 

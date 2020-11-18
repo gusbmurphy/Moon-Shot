@@ -141,6 +141,7 @@ MonoBehaviour:
   forceIndicator: {fileID: 4042010988482425995}
   allowForceAdjustment: 0
   adjustmentRange: 2
+  adjustmentSensitivity: 0.01
 --- !u!1 &4042010988482425995
 GameObject:
   m_ObjectHideFlags: 0
