@@ -9,29 +9,37 @@ public class StrikeMarker : MonoBehaviour
     [SerializeField] private GameObject forceIndicator;
     public bool allowForceAdjustment = false;
     public float adjustmentRange = 2f;
-    public float adjustmentSensitivity = 0.1f;
+    public float adjustmentSensitivity = 0.01f;
+
+    private Camera mainCamera;
 
     private bool dragging = false;
-    private Camera mainCamera;
+    private bool dragUpIsPositive; // This variable is changed depending on which direction the camera is facing
     private Vector3 initialMousePosition;
     private Vector3 currentMousePosition;
+
     private Vector3 minimumAdjustmentPosition;
     private Vector3 maximumAdjustmentPosition;
+
     private Plane adjustmentPlane;
-    private Plane forwardPlane;
     private Ray ray;
     private float _currentAdjustment = 0f;
     private LineRenderer lineRenderer;
 
     public event Action CompleteSetup;
 
+    // For Gizmo drawing purposes
+    private Vector3[] adjustmentPlanePoints;
+
     public float CurrentAdjustment
     {
         get { return _currentAdjustment; }
-        set 
+        set
         {
             _currentAdjustment = Mathf.Max(0f, value);
             _currentAdjustment = Mathf.Min(1f, value);
+
+            forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, _currentAdjustment);
         }
     }
 
@@ -44,7 +52,7 @@ public class StrikeMarker : MonoBehaviour
     {
         forceIndicator.transform.localScale = new Vector3(
             forceIndicator.transform.localScale.x,
-            forceIndicator.transform.localScale.y, 
+            forceIndicator.transform.localScale.y,
             forceIndicator.transform.localScale.z * force
             );
     }
@@ -62,7 +70,7 @@ public class StrikeMarker : MonoBehaviour
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Standard"));
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPositions(new Vector3[2] { minimumAdjustmentPosition, maximumAdjustmentPosition } );
+        lineRenderer.SetPositions(new Vector3[2] { minimumAdjustmentPosition, maximumAdjustmentPosition });
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.25f;
 
@@ -92,38 +100,29 @@ public class StrikeMarker : MonoBehaviour
                     if (hit.transform == forceIndicator.transform)
                     {
                         dragging = true;
-                        adjustmentPlane = new Plane(forceIndicator.transform.up, forceIndicator.transform.position);
-                        forwardPlane = new Plane(-forceIndicator.transform.forward, forceIndicator.transform.position);
 
-                        float enter;
+                        initialMousePosition = Input.mousePosition;
 
-                        if (adjustmentPlane.Raycast(ray, out enter))
-                        {
-                            initialMousePosition = ray.GetPoint(enter);
-                        }
+                        // Create the adjustment plane...
+                        // 1) Get the vector perpindicular to the triangle created by the min and max adjustment, and camera
+                        Vector3 side1 = maximumAdjustmentPosition - minimumAdjustmentPosition;
+                        Vector3 side2 = minimumAdjustmentPosition - mainCamera.transform.position;
+                        Vector3 perpindicular = Vector3.Cross(side1, side2);
+
+                        // 2) Use that to create a plane parallel with the camera and min adjustment, and perpindicular to the adjustment range
+                        adjustmentPlane = new Plane(mainCamera.transform.position, minimumAdjustmentPosition, perpindicular);
+                        adjustmentPlanePoints = new Vector3[] { mainCamera.transform.position, minimumAdjustmentPosition, perpindicular };
                     }
                 }
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) && dragging)
+            // Currently the dragging doesn't start quite at the point I'd expect, could it have something to do with the
+            // fact that the adjustment plane goes "into" the camera?
+            if (Input.GetKey(KeyCode.Mouse0) && dragging && Input.mousePosition != currentMousePosition)
             {
-                float enter;
-                ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-                if (adjustmentPlane.Raycast(ray, out enter))
-                {
-                    if (ray.GetPoint(enter) != currentMousePosition)
-                    {
-                        currentMousePosition = ray.GetPoint(enter);
-
-                        float adjustmentMagnitude = (initialMousePosition - currentMousePosition).magnitude;
-                        if (!forwardPlane.GetSide(currentMousePosition)) adjustmentMagnitude = -adjustmentMagnitude;
-
-                        CurrentAdjustment += adjustmentMagnitude * adjustmentSensitivity;
-                        print("adjustment in strikemarker: " + CurrentAdjustment);
-                        forceIndicator.transform.position = Vector3.Lerp(minimumAdjustmentPosition, maximumAdjustmentPosition, CurrentAdjustment);
-                    }
-                }
+                currentMousePosition = Input.mousePosition;
+                float adjustmentMagnitude = adjustmentPlane.GetDistanceToPoint(currentMousePosition);
+                CurrentAdjustment = adjustmentMagnitude * adjustmentSensitivity;
             }
 
             if (Input.GetKeyUp(KeyCode.Mouse0) && dragging)
@@ -149,5 +148,11 @@ public class StrikeMarker : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(minimumAdjustmentPosition, 0.5f);
         Gizmos.DrawWireSphere(maximumAdjustmentPosition, 0.5f);
+
+        Gizmos.color = Color.blue;
+        Array.ForEach(adjustmentPlanePoints, point =>
+        {
+            Gizmos.DrawSphere(point, 0.3f);
+        });
     }
 }
