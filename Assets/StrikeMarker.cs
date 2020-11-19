@@ -14,6 +14,7 @@ public class StrikeMarker : MonoBehaviour
     private bool dragging = false;
     private Camera mainCamera;
     private Vector3 lastMousePosition;
+    private Vector3 tempIndicatorPosition;
     private Vector3 initialMousePosition;
     private Vector3 currentMousePosition;
     private Vector3 minimumAdjustmentPosition;
@@ -83,6 +84,11 @@ public class StrikeMarker : MonoBehaviour
 
     private void Update()
     {
+        if (!dragging)
+        {
+            adjustmentPlane = new Plane((mainCamera.transform.position - forceIndicator.transform.position), forceIndicator.transform.position);
+        }
+
         if (allowForceAdjustment)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -94,23 +100,47 @@ public class StrikeMarker : MonoBehaviour
                     if (hit.transform == forceIndicator.transform)
                     {
                         dragging = true;
+                        tempIndicatorPosition = forceIndicator.transform.position;
+
+                        if (adjustmentPlane.Raycast(ray, out float enter)) { lastMousePosition = ray.GetPoint(enter); }
                     }
                 }
             }
 
             if (Input.GetKey(KeyCode.Mouse0) && dragging)
             {
-                currentMousePosition = Input.mousePosition;
-                if (currentMousePosition != lastMousePosition)
+                ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+                if (adjustmentPlane.Raycast(ray, out float enter))
                 {
-                    Vector3 mouseVelocity = currentMousePosition - lastMousePosition;
+                    // Get the point that is clicked
+                    currentMousePosition = ray.GetPoint(enter);
+
+                    // Move the temp position according to the mouse acceleration
+                    // TODO: Make this smooth with a lerp/slerp or something
+                    Vector3 mouseAcceleration = currentMousePosition - lastMousePosition;
+                    tempIndicatorPosition = tempIndicatorPosition + mouseAcceleration;
+
+                    // Project the temporary position onto the adjustment vector to get expected position on the line
+                    Vector3 projection = Vector3.Project(tempIndicatorPosition, minimumAdjustmentPosition - maximumAdjustmentPosition);
+                    forceIndicator.transform.position = projection;
+                    forceIndicator.transform.Translate(minimumAdjustmentPosition);
+
+                    lastMousePosition = currentMousePosition;
+
+                    // Clamp force indicator between the two planes of the minimum and maximum positions
+                    //Plane minimumAdjustmentPlane = new Plane((maximumAdjustmentPosition - minimumAdjustmentPosition), minimumAdjustmentPosition);
+                    //Plane maximumAdjustmentPlane = new Plane((minimumAdjustmentPosition - maximumAdjustmentPosition), maximumAdjustmentPosition);
+
+                    //if (minimumAdjustmentPlane.GetSide(forceIndicator.transform.position)) { forceIndicator.transform.position = minimumAdjustmentPosition; }
+                    //else if (maximumAdjustmentPlane.GetSide(forceIndicator.transform.position)) { forceIndicator.transform.position = maximumAdjustmentPosition; }
                 }
             }
 
             if (Input.GetKeyUp(KeyCode.Mouse0) && dragging)
             {
                 dragging = false;
-                CompleteSetup();
+                //CompleteSetup();
             }
         }
     }
