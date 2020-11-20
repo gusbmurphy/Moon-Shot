@@ -12,6 +12,7 @@ public class TranslationAdjustmentHandle : MonoBehaviour
     public enum Direction { x, y, z }
     public Direction direction = Direction.z;
     public float maxAdjustmentDistance = 5f;
+    public bool isAdjustable = false;
 
     private Vector3 maxPosition;
     private Vector3 minPosition;
@@ -74,52 +75,60 @@ public class TranslationAdjustmentHandle : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (isAdjustable)
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (hit.transform == transform)
-                {
-                    isClicked = true;
-                }
-
-                adjustmentPlane = new Plane
-                    (
-                        Camera.main.transform.position - transform.position,
-                        transform.position
-                    );
-
-                // Set the previous mouse position to this initial one.
-                if (adjustmentPlane.Raycast(ray, out float enter))
-                {
-                    previousMousePos = ray.GetPoint(enter);
-                }
-            }
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            if (isClicked)
-            {
-                isDragging = true;
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                // Get the current mouse position on the adjustment plane.
-                if (adjustmentPlane.Raycast(ray, out float enter))
+                if (Physics.Raycast(ray, out hit))
                 {
-                    currentMousePos = ray.GetPoint(enter);
+                    if (hit.transform == transform)
+                    {
+                        isClicked = true;
+                    }
 
-                    if (currentMousePos != previousMousePos)
-                        ApplyDrag(currentMousePos - previousMousePos);
+                    adjustmentPlane = new Plane
+                        (
+                            Camera.main.transform.position - transform.position,
+                            transform.position
+                        );
 
-                    previousMousePos = currentMousePos;
+                    // Set the previous mouse position to this initial one.
+                    if (adjustmentPlane.Raycast(ray, out float enter))
+                    {
+                        previousMousePos = ray.GetPoint(enter);
+                    }
                 }
             }
-        }
 
-        if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButton(0))
+            {
+                if (isClicked)
+                {
+                    isDragging = true;
+                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                    // Get the current mouse position on the adjustment plane.
+                    if (adjustmentPlane.Raycast(ray, out float enter))
+                    {
+                        currentMousePos = ray.GetPoint(enter);
+
+                        if (currentMousePos != previousMousePos)
+                            ApplyDrag(currentMousePos - previousMousePos);
+
+                        previousMousePos = currentMousePos;
+                    }
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                isClicked = false;
+                isDragging = false;
+            }
+        }
+        else
         {
             isClicked = false;
             isDragging = false;
