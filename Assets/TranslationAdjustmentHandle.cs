@@ -152,29 +152,29 @@ public class TranslationAdjustmentHandle : MonoBehaviour
             transform.position = minPosition;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(maxPosition, 0.25f);
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(maxPosition, 0.25f);
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(minPosition, 0.25f);
-        Gizmos.DrawLine(minPosition, maxPosition);
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawWireSphere(minPosition, 0.25f);
+    //    Gizmos.DrawLine(minPosition, maxPosition);
 
-        if (isDragging)
-        {
-            Handles.Label(transform.position + new Vector3(0, 2), "Dragging...");
-            Handles.Label(transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
+    //    if (isDragging)
+    //    {
+    //        Handles.Label(transform.position + new Vector3(0, 2), "Dragging...");
+    //        Handles.Label(transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(currentMousePos, 0.25f);
-        }
+    //        Gizmos.color = Color.green;
+    //        Gizmos.DrawWireSphere(currentMousePos, 0.25f);
+    //    }
 
-        if (isClicked)
-        {
-            Handles.Label(transform.position, "Clicked");
-        }
+    //    if (isClicked)
+    //    {
+    //        Handles.Label(transform.position, "Clicked");
+    //    }
 
-        Handles.Label(transform.position, "Current adjustment: " + CurrentAdjustment);
-    }
+    //    Handles.Label(transform.position, "Current adjustment: " + CurrentAdjustment);
+    //}
 }

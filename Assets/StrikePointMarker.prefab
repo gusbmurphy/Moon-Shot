@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5611fd1d487e6f448ac16d08e589034d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceIndicator: {fileID: 4042010988482425995}
+  forceIndicator: {fileID: 0}
   allowForceAdjustment: 0
   adjustmentRange: 2
   adjustmentSensitivity: 0.01
@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 6807150217246466151}
   - component: {fileID: 7168349042903885582}
   - component: {fileID: 8647809183579788829}
+  - component: {fileID: 6412621425268947961}
   m_Layer: 0
   m_Name: ForceIndicator
   m_TagString: Untagged
@@ -235,3 +236,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6412621425268947961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4042010988482425995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6930e92772fc04bf781aa8ce4cef54d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 2
+  maxAdjustmentDistance: 5
+  isAdjustable: 0

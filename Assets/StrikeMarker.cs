@@ -6,7 +6,7 @@ using System;
 
 public class StrikeMarker : MonoBehaviour
 {
-    [SerializeField] private GameObject forceIndicator;
+    [SerializeField] private TranslationAdjustmentHandle forceIndicator;
     public bool allowForceAdjustment = false;
     public float adjustmentRange = 2f;
     public float adjustmentSensitivity = 0.1f;
@@ -145,20 +145,20 @@ public class StrikeMarker : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if (dragging)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(initialMousePosition, 0.25f);
+    //private void OnDrawGizmos()
+    //{
+    //    if (dragging)
+    //    {
+    //        Gizmos.color = Color.magenta;
+    //        Gizmos.DrawWireSphere(initialMousePosition, 0.25f);
 
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(currentMousePosition, 0.25f);
-            Handles.Label(currentMousePosition, "Difference magnitude: " + (initialMousePosition - currentMousePosition).magnitude);
-        }
+    //        Gizmos.color = Color.cyan;
+    //        Gizmos.DrawWireSphere(currentMousePosition, 0.25f);
+    //        Handles.Label(currentMousePosition, "Difference magnitude: " + (initialMousePosition - currentMousePosition).magnitude);
+    //    }
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(minimumAdjustmentPosition, 0.5f);
-        Gizmos.DrawWireSphere(maximumAdjustmentPosition, 0.5f);
-    }
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(minimumAdjustmentPosition, 0.5f);
+    //    Gizmos.DrawWireSphere(maximumAdjustmentPosition, 0.5f);
+    //}
 }
