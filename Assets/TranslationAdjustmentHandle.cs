@@ -9,12 +9,13 @@ using UnityEditor;
 
 public class TranslationAdjustmentHandle : MonoBehaviour
 {
-    public enum TranslationDirection { x, y, z }
-    public TranslationDirection direction = TranslationDirection.z;
-    public float maxAdjustmentDistance = 5f;
+    //public enum TranslationDirection { x, y, z }
+    //public TranslationDirection direction = TranslationDirection.z;
+    //public float maxAdjustmentDistance = 5f;
 
-    private Vector3 maxPosition;
-    private Vector3 minPosition;
+    public GameObject indicator;
+    public Transform maxPosition;
+    public Transform minPosition;
 
     private bool isClicked = false;
     private bool isDragging = false;
@@ -42,39 +43,39 @@ public class TranslationAdjustmentHandle : MonoBehaviour
     {
         get
         {
-            float distFromMin = (transform.position - minPosition).magnitude;
-            float maxPotentialDist = (maxPosition - minPosition).magnitude;
+            float distFromMin = (indicator.transform.position - minPosition.position).magnitude;
+            float maxPotentialDist = (maxPosition.position - minPosition.position).magnitude;
             return distFromMin / maxPotentialDist;
         }
     }
 
     private void Start()
     {
-        minPosition = transform.position;
+        //minPosition = transform.position;
 
         // Create the maximum position based off of the given direction.
-        switch (direction)
-        {
-            case TranslationDirection.x:
-                maxPosition = transform.position
-                    + transform.right * maxAdjustmentDistance;
-                break;
-            case TranslationDirection.y:
-                maxPosition = transform.position
-                    + transform.up * maxAdjustmentDistance;
-                break;
-            case TranslationDirection.z:
-                maxPosition = transform.position
-                    + transform.forward * maxAdjustmentDistance;
-                break;
-            default:
-                throw new Exception(
-                    "Translation Adjustment Handle has invalid direction."
-                    );
-        }
+        //switch (direction)
+        //{
+        //    case TranslationDirection.x:
+        //        maxPosition = transform.position
+        //            + transform.right * maxAdjustmentDistance;
+        //        break;
+        //    case TranslationDirection.y:
+        //        maxPosition = transform.position
+        //            + transform.up * maxAdjustmentDistance;
+        //        break;
+        //    case TranslationDirection.z:
+        //        maxPosition = transform.position
+        //            + transform.forward * maxAdjustmentDistance;
+        //        break;
+        //    default:
+        //        throw new Exception(
+        //            "Translation Adjustment Handle has invalid direction."
+        //            );
+        //}
 
-        minPlane = new Plane(maxPosition - minPosition, minPosition);
-        maxPlane = new Plane(minPosition - maxPosition, maxPosition);
+        minPlane = new Plane(maxPosition.position - minPosition.position, minPosition.position);
+        maxPlane = new Plane(minPosition.position - maxPosition.position, maxPosition.position);
     }
 
     void Update()
@@ -85,15 +86,15 @@ public class TranslationAdjustmentHandle : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.transform == transform)
+                if (hit.transform == indicator.transform)
                 {
                     isClicked = true;
                 }
 
                 adjustmentPlane = new Plane
                     (
-                        Camera.main.transform.position - transform.position,
-                        transform.position
+                        Camera.main.transform.position - indicator.transform.position,
+                        indicator.transform.position
                     );
 
                 // Set the previous mouse position to this initial one.
@@ -135,32 +136,32 @@ public class TranslationAdjustmentHandle : MonoBehaviour
     {
         /* Get a projection of the change vector onto the "rail" that we are 
          * allowing change along. */
-        Vector3 projection = Vector3.Project(change, maxPosition - minPosition);
-        transform.position = transform.position + projection;
+        Vector3 projection = Vector3.Project(change, maxPosition.position - minPosition.position);
+        indicator.transform.position = indicator.transform.position + projection;
 
         /* Constrain to within the max and min planes. Since each of these goes
          * through one constraint and looks at the other, if the transform is
          * not on one of their positive sides, it must be beyond that
          * constraint. */
-        if (!maxPlane.GetSide(transform.position))
-            transform.position = maxPosition;
-        else if (!minPlane.GetSide(transform.position))
-            transform.position = minPosition;
+        if (!maxPlane.GetSide(indicator.transform.position))
+            indicator.transform.position = maxPosition.position;
+        else if (!minPlane.GetSide(indicator.transform.position))
+            indicator.transform.position = minPosition.position;
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(maxPosition, 0.25f);
+        Gizmos.DrawWireSphere(maxPosition.position, 0.25f);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(minPosition, 0.25f);
-        Gizmos.DrawLine(minPosition, maxPosition);
+        Gizmos.DrawWireSphere(minPosition.position, 0.25f);
+        Gizmos.DrawLine(minPosition.position, maxPosition.position);
 
         if (isDragging)
         {
-            Handles.Label(transform.position + new Vector3(0, 2), "Dragging...");
-            Handles.Label(transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
+            Handles.Label(indicator.transform.position + new Vector3(0, 2), "Dragging...");
+            Handles.Label(indicator.transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
 
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(currentMousePos, 0.25f);
@@ -168,9 +169,9 @@ public class TranslationAdjustmentHandle : MonoBehaviour
 
         if (isClicked)
         {
-            Handles.Label(transform.position, "Clicked");
+            Handles.Label(indicator.transform.position, "Clicked");
         }
 
-        Handles.Label(transform.position, "Current adjustment: " + CurrentAdjustment);
+        Handles.Label(indicator.transform.position, "Current adjustment: " + CurrentAdjustment);
     }
 }
