@@ -297,7 +297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 780803164}
   - component: {fileID: 780803163}
-  - component: {fileID: 780803165}
+  - component: {fileID: 780803166}
   m_Layer: 0
   m_Name: Player Controller
   m_TagString: Untagged
@@ -335,7 +335,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: 0}
---- !u!114 &780803165
+--- !u!114 &780803166
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -344,15 +344,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 780803162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53b567f3844a7594fac506efba6a798d, type: 3}
+  m_Script: {fileID: 11500000, guid: 9730cb63f1e1147f19da6abbe6eaffda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cueBall: {fileID: 1741052699}
-  strikePointMarker: {fileID: 8996701592650101805, guid: 535d75db70136e84e952f017c2622757,
+  target: {fileID: 1741052699}
+  indicatorToInstantiate: {fileID: 3482841531141122522, guid: 0bf76b07a1a414f98864077ac123a341,
     type: 3}
-  dragForceSensitivity: 0.1
+  handleToInstantiate: {fileID: 512820440954187452, guid: 68f39f131258642fc967dc2669edfca0,
+    type: 3}
   baseForce: 3000
-  controlStage: 0
 --- !u!1001 &791548033
 PrefabInstance:
   m_ObjectHideFlags: 0
