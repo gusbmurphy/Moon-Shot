@@ -10,8 +10,10 @@ public class AdjustmentController : MonoBehaviour
 
     public GameObject indicatorToInstantiate;
     private GameObject indicator;
-    public GameObject handleToInstantiate;
-    private GameObject handle;
+    public TranslationAdjustmentHandle handleToInstantiate;
+    private TranslationAdjustmentHandle handle;
+
+    public float baseForce = 3000f;
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
@@ -32,11 +34,24 @@ public class AdjustmentController : MonoBehaviour
             /* If the indicator has been locked, then we can instantiate the
              * handle. */
             if (!handle) handle = Instantiate(
-                handleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.forward * -0.5f,
-                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
+                    handleToInstantiate,
+                    indicator.transform.position +
+                    indicator.transform.forward * -0.5f,
+                    indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
                 );
+
+            // If the user clicks the main indicator now, we hit the ball.
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    if (hit.collider.gameObject == indicator)
+                    {
+                        Hit();
+                    }
+                }
+            }
         }
     }
 
@@ -66,5 +81,13 @@ public class AdjustmentController : MonoBehaviour
         {
             if (indicator != null) GameObject.Destroy(indicator.gameObject);
         }
+    }
+
+    private void Hit()
+    {
+        Vector3 forceVector =
+            (target.transform.position - indicator.transform.position) *
+            (handle.CurrentAdjustment * baseForce);
+        target.GetComponent<Rigidbody>().AddForce(forceVector);
     }
 }
