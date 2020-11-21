@@ -12,7 +12,6 @@ public class TranslationAdjustmentHandle : MonoBehaviour
     public enum Direction { x, y, z }
     public Direction direction = Direction.z;
     public float maxAdjustmentDistance = 5f;
-    public bool isAdjustable = false;
 
     private Vector3 maxPosition;
     private Vector3 minPosition;
@@ -57,78 +56,75 @@ public class TranslationAdjustmentHandle : MonoBehaviour
         switch (direction)
         {
             case Direction.x:
-                maxPosition = transform.position + transform.right * maxAdjustmentDistance;
+                maxPosition = transform.position
+                    + transform.right * maxAdjustmentDistance;
                 break;
             case Direction.y:
-                maxPosition = transform.position + transform.up * maxAdjustmentDistance;
+                maxPosition = transform.position
+                    + transform.up * maxAdjustmentDistance;
                 break;
             case Direction.z:
-                maxPosition = transform.position + transform.forward * maxAdjustmentDistance;
+                maxPosition = transform.position
+                    + transform.forward * maxAdjustmentDistance;
                 break;
             default:
-                throw new Exception("Translation Adjustment Handle has invalid direction.");
+                throw new Exception(
+                    "Translation Adjustment Handle has invalid direction."
+                    );
         }
 
-        minPlane = new Plane((maxPosition - minPosition), minPosition);
-        maxPlane = new Plane((minPosition - maxPosition), maxPosition);
+        minPlane = new Plane(maxPosition - minPosition, minPosition);
+        maxPlane = new Plane(minPosition - maxPosition, maxPosition);
     }
 
     void Update()
     {
-        if (isAdjustable)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform == transform)
                 {
-                    if (hit.transform == transform)
-                    {
-                        isClicked = true;
-                    }
-
-                    adjustmentPlane = new Plane
-                        (
-                            Camera.main.transform.position - transform.position,
-                            transform.position
-                        );
-
-                    // Set the previous mouse position to this initial one.
-                    if (adjustmentPlane.Raycast(ray, out float enter))
-                    {
-                        previousMousePos = ray.GetPoint(enter);
-                    }
+                    isClicked = true;
                 }
-            }
 
-            if (Input.GetMouseButton(0))
-            {
-                if (isClicked)
+                adjustmentPlane = new Plane
+                    (
+                        Camera.main.transform.position - transform.position,
+                        transform.position
+                    );
+
+                // Set the previous mouse position to this initial one.
+                if (adjustmentPlane.Raycast(ray, out float enter))
                 {
-                    isDragging = true;
-                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                    // Get the current mouse position on the adjustment plane.
-                    if (adjustmentPlane.Raycast(ray, out float enter))
-                    {
-                        currentMousePos = ray.GetPoint(enter);
-
-                        if (currentMousePos != previousMousePos)
-                            ApplyDrag(currentMousePos - previousMousePos);
-
-                        previousMousePos = currentMousePos;
-                    }
+                    previousMousePos = ray.GetPoint(enter);
                 }
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                isClicked = false;
-                isDragging = false;
             }
         }
-        else
+
+        if (Input.GetMouseButton(0))
+        {
+            if (isClicked)
+            {
+                isDragging = true;
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                // Get the current mouse position on the adjustment plane.
+                if (adjustmentPlane.Raycast(ray, out float enter))
+                {
+                    currentMousePos = ray.GetPoint(enter);
+
+                    if (currentMousePos != previousMousePos)
+                        ApplyDrag(currentMousePos - previousMousePos);
+
+                    previousMousePos = currentMousePos;
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
         {
             isClicked = false;
             isDragging = false;
@@ -140,7 +136,7 @@ public class TranslationAdjustmentHandle : MonoBehaviour
         /* Get a projection of the change vector onto the "rail" that we are 
          * allowing change along. */
         Vector3 projection = Vector3.Project(change, maxPosition - minPosition);
-        transform.Translate(projection);
+        transform.position = transform.position + projection;
 
         /* Constrain to within the max and min planes. Since each of these goes
          * through one constraint and looks at the other, if the transform is
@@ -152,29 +148,29 @@ public class TranslationAdjustmentHandle : MonoBehaviour
             transform.position = minPosition;
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(maxPosition, 0.25f);
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(maxPosition, 0.25f);
 
-    //    Gizmos.color = Color.blue;
-    //    Gizmos.DrawWireSphere(minPosition, 0.25f);
-    //    Gizmos.DrawLine(minPosition, maxPosition);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(minPosition, 0.25f);
+        Gizmos.DrawLine(minPosition, maxPosition);
 
-    //    if (isDragging)
-    //    {
-    //        Handles.Label(transform.position + new Vector3(0, 2), "Dragging...");
-    //        Handles.Label(transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
+        if (isDragging)
+        {
+            Handles.Label(transform.position + new Vector3(0, 2), "Dragging...");
+            Handles.Label(transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
 
-    //        Gizmos.color = Color.green;
-    //        Gizmos.DrawWireSphere(currentMousePos, 0.25f);
-    //    }
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(currentMousePos, 0.25f);
+        }
 
-    //    if (isClicked)
-    //    {
-    //        Handles.Label(transform.position, "Clicked");
-    //    }
+        if (isClicked)
+        {
+            Handles.Label(transform.position, "Clicked");
+        }
 
-    //    Handles.Label(transform.position, "Current adjustment: " + CurrentAdjustment);
-    //}
+        Handles.Label(transform.position, "Current adjustment: " + CurrentAdjustment);
+    }
 }

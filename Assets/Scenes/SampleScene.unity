@@ -352,6 +352,7 @@ MonoBehaviour:
     type: 3}
   dragForceSensitivity: 0.1
   baseForce: 3000
+  controlStage: 0
 --- !u!1001 &791548033
 PrefabInstance:
   m_ObjectHideFlags: 0

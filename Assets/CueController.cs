@@ -18,7 +18,7 @@ public class CueController : MonoBehaviour
     public float dragForceSensitivity = 0.1f;
     public float baseForce = 3000f;
     private StrikeMarker markerInstance = null;
-    private ControlStage controlStage = ControlStage.SetPosition;
+    public ControlStage controlStage = ControlStage.SetPosition;
 
     private new Camera camera;
     private Ray ray;
@@ -95,13 +95,12 @@ public class CueController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && markerInstance != null)
         {
             controlStage = ControlStage.SetForce;
-            markerInstance.PositionIsSet();
+            markerInstance.SetPosition();
         }
     }
 
     private void HandleForceSetupCompletion()
     {
-        print("Dear lord.");
         controlStage = ControlStage.Ready;
     }
 
@@ -109,7 +108,8 @@ public class CueController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Strike(baseForce * markerInstance.CurrentAdjustment);
+            print("I guess we're striking");
+            //Strike(baseForce * markerInstance.CurrentAdjustment);
         }
     }
 }
