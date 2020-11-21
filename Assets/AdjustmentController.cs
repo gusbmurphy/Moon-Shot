@@ -10,8 +10,12 @@ public class AdjustmentController : MonoBehaviour
 
     public GameObject indicatorToInstantiate;
     private GameObject indicator;
-    public TranslationAdjustmentHandle handleToInstantiate;
-    private TranslationAdjustmentHandle handle;
+    public TranslationAdjustmentHandle forceHandleToInstantiate;
+    private TranslationAdjustmentHandle forceHandle;
+    public RotationAdjustmentHandle xRotationHandleToInstantiate;
+    private RotationAdjustmentHandle xRotationHandle;
+    public RotationAdjustmentHandle yRotationHandleToInstantiate;
+    private RotationAdjustmentHandle yRotationHandle;
 
     public float baseForce = 3000f;
 
@@ -32,13 +36,8 @@ public class AdjustmentController : MonoBehaviour
         else
         {
             /* If the indicator has been locked, then we can instantiate the
-             * handle. */
-            if (!handle) handle = Instantiate(
-                    handleToInstantiate,
-                    indicator.transform.position +
-                    indicator.transform.forward * -0.5f,
-                    indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
-                );
+             * handles. */
+            CreateHandles();
 
             // If the user clicks the main indicator now, we hit the ball.
             if (Input.GetMouseButtonDown(0))
@@ -52,6 +51,47 @@ public class AdjustmentController : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private void CreateHandles()
+    {
+        if (!forceHandle)
+        {
+            forceHandle = Instantiate(
+                forceHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.forward * -0.5f,
+                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
+            );
+            forceHandle.transform.SetParent(indicator.transform);
+        }
+
+        if (!xRotationHandle)
+        {
+            xRotationHandle = Instantiate(
+                xRotationHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.right * 0.5f,
+                indicator.transform.rotation
+            );
+            xRotationHandle.objectToRotate = indicator;
+            xRotationHandle.objectToRotateAround = target;
+            xRotationHandle.transform.SetParent(indicator.transform);
+        }
+
+
+        if (!yRotationHandle)
+        {
+            yRotationHandle = Instantiate(
+                yRotationHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.up * 0.5f,
+                indicator.transform.rotation
+            );
+            yRotationHandle.objectToRotate = indicator;
+            yRotationHandle.objectToRotateAround = target;
+            yRotationHandle.transform.SetParent(indicator.transform);
         }
     }
 
@@ -87,7 +127,7 @@ public class AdjustmentController : MonoBehaviour
     {
         Vector3 forceVector =
             (target.transform.position - indicator.transform.position) *
-            (handle.CurrentAdjustment * baseForce);
+            (forceHandle.CurrentAdjustment * baseForce);
         target.GetComponent<Rigidbody>().AddForce(forceVector);
     }
 }

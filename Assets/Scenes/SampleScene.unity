@@ -350,7 +350,11 @@ MonoBehaviour:
   target: {fileID: 1741052699}
   indicatorToInstantiate: {fileID: 3482841531141122522, guid: 0bf76b07a1a414f98864077ac123a341,
     type: 3}
-  handleToInstantiate: {fileID: 512820440954187452, guid: 68f39f131258642fc967dc2669edfca0,
+  forceHandleToInstantiate: {fileID: 512820440954187452, guid: 68f39f131258642fc967dc2669edfca0,
+    type: 3}
+  xRotationHandleToInstantiate: {fileID: -3059101495959685165, guid: 24c83c55dfe774ced93fc5e0bf8c4cd9,
+    type: 3}
+  yRotationHandleToInstantiate: {fileID: -3059101495959685165, guid: c9fa7305dbec8427d875158716815427,
     type: 3}
   baseForce: 3000
 --- !u!1001 &791548033

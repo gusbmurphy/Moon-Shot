@@ -9,8 +9,8 @@ using UnityEditor;
 
 public class TranslationAdjustmentHandle : MonoBehaviour
 {
-    public enum Direction { x, y, z }
-    public Direction direction = Direction.z;
+    public enum TranslationDirection { x, y, z }
+    public TranslationDirection direction = TranslationDirection.z;
     public float maxAdjustmentDistance = 5f;
 
     private Vector3 maxPosition;
@@ -55,15 +55,15 @@ public class TranslationAdjustmentHandle : MonoBehaviour
         // Create the maximum position based off of the given direction.
         switch (direction)
         {
-            case Direction.x:
+            case TranslationDirection.x:
                 maxPosition = transform.position
                     + transform.right * maxAdjustmentDistance;
                 break;
-            case Direction.y:
+            case TranslationDirection.y:
                 maxPosition = transform.position
                     + transform.up * maxAdjustmentDistance;
                 break;
-            case Direction.z:
+            case TranslationDirection.z:
                 maxPosition = transform.position
                     + transform.forward * maxAdjustmentDistance;
                 break;
