@@ -109,7 +109,7 @@ public class RotationAdjustmentHandle : MonoBehaviour
         switch (direction)
         {
             case (RotationDirection.x):
-                axis = transform.up;
+                axis = Vector3.up;
                 rotation = projection.x;
                 break;
             case (RotationDirection.y):
