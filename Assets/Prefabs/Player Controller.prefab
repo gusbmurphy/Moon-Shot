@@ -69,6 +69,8 @@ MonoBehaviour:
     type: 3}
   yRotationHandleToInstantiate: {fileID: -3059101495959685165, guid: c9fa7305dbec8427d875158716815427,
     type: 3}
+  goButtonToInstantiate: {fileID: 3627379331870710055, guid: 669c7727a0dcb4225b0487cde637087f,
+    type: 3}
   baseForce: 3000
 --- !u!1 &5647739802643033634
 GameObject:

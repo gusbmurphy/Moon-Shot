@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /* This class is responsible for providing the various handles to make
@@ -10,24 +11,43 @@ public class AdjustmentController : MonoBehaviour
 
     public GameObject indicatorToInstantiate;
     private GameObject indicator;
+
     public TranslationAdjustmentHandle forceHandleToInstantiate;
     private TranslationAdjustmentHandle forceHandle;
+
     public RotationAdjustmentHandle xRotationHandleToInstantiate;
     private RotationAdjustmentHandle xRotationHandle;
+
     public RotationAdjustmentHandle yRotationHandleToInstantiate;
     private RotationAdjustmentHandle yRotationHandle;
 
+    public GameObject goButtonToInstantiate;
+    private GameObject goButton;
+
     public float baseForce = 3000f;
+
+    public GameObject trajectoryIndicatorToPool;
+    public int numOfTrajectoryIndicatorsToPool = 5;
+    private List<GameObject> trajectoryIndicatorPool = new List<GameObject>();
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
     private bool indicatorLocked = false;
+
+    private bool draggingIndicator = false;
 
     private Camera cam;
 
     private void Start()
     {
         cam = Camera.main;
+
+        for (int i = 0; i < numOfTrajectoryIndicatorsToPool; i++)
+        {
+            GameObject newIndicator = Instantiate(trajectoryIndicatorToPool);
+            newIndicator.SetActive(false);
+            trajectoryIndicatorPool.Add(newIndicator);
+        }
     }
 
     private void Update()
@@ -45,7 +65,7 @@ public class AdjustmentController : MonoBehaviour
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (hit.collider.gameObject == indicator)
+                    if (hit.collider.gameObject == goButton)
                     {
                         Hit();
                     }
@@ -80,7 +100,6 @@ public class AdjustmentController : MonoBehaviour
             xRotationHandle.transform.SetParent(indicator.transform);
         }
 
-
         if (!yRotationHandle)
         {
             yRotationHandle = Instantiate(
@@ -92,6 +111,16 @@ public class AdjustmentController : MonoBehaviour
             yRotationHandle.objectToRotate = indicator;
             yRotationHandle.objectToRotateAround = target;
             yRotationHandle.transform.SetParent(indicator.transform);
+        }
+
+        if (!goButton)
+        {
+            goButton = Instantiate(
+                goButtonToInstantiate,
+                indicator.transform.position +
+                indicator.transform.up * 1f,
+                indicator.transform.rotation
+            );
         }
     }
 
@@ -121,6 +150,11 @@ public class AdjustmentController : MonoBehaviour
         {
             if (indicator != null) GameObject.Destroy(indicator.gameObject);
         }
+    }
+
+    private void ShowTrajectory(Vector3 force)
+    {
+        throw new NotImplementedException();
     }
 
     private void Hit()
