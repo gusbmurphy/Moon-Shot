@@ -130,6 +130,14 @@ public class TranslationAdjustmentHandle : MonoBehaviour
             isClicked = false;
             isDragging = false;
         }
+
+        if (transform.hasChanged)
+        {
+            print("Hello.");
+            minPlane = new Plane(maxPosition.position - minPosition.position, minPosition.position);
+            maxPlane = new Plane(minPosition.position - maxPosition.position, maxPosition.position);
+            transform.hasChanged = false;
+        }
     }
 
     private void ApplyDrag(Vector3 change)
@@ -149,29 +157,29 @@ public class TranslationAdjustmentHandle : MonoBehaviour
             indicator.transform.position = minPosition.position;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(maxPosition.position, 0.25f);
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(maxPosition.position, 0.25f);
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(minPosition.position, 0.25f);
-        Gizmos.DrawLine(minPosition.position, maxPosition.position);
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawWireSphere(minPosition.position, 0.25f);
+    //    Gizmos.DrawLine(minPosition.position, maxPosition.position);
 
-        if (isDragging)
-        {
-            Handles.Label(indicator.transform.position + new Vector3(0, 2), "Dragging...");
-            Handles.Label(indicator.transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
+    //    if (isDragging)
+    //    {
+    //        Handles.Label(indicator.transform.position + new Vector3(0, 2), "Dragging...");
+    //        Handles.Label(indicator.transform.position + new Vector3(2, 2), "currentMousePos: " + currentMousePos.ToString());
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(currentMousePos, 0.25f);
-        }
+    //        Gizmos.color = Color.green;
+    //        Gizmos.DrawWireSphere(currentMousePos, 0.25f);
+    //    }
 
-        if (isClicked)
-        {
-            Handles.Label(indicator.transform.position, "Clicked");
-        }
+    //    if (isClicked)
+    //    {
+    //        Handles.Label(indicator.transform.position, "Clicked");
+    //    }
 
-        Handles.Label(indicator.transform.position, "Current adjustment: " + CurrentAdjustment);
-    }
+    //    Handles.Label(indicator.transform.position, "Current adjustment: " + CurrentAdjustment);
+    //}
 }
