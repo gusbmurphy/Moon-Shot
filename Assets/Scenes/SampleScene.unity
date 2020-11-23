@@ -316,7 +316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7707759bd60f149acbcc5e7489f90873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnText: {fileID: 0}
+  turnText: {fileID: 1699902470}
+  awaitingUser: 1
 --- !u!4 &706799133
 Transform:
   m_ObjectHideFlags: 0
@@ -1193,6 +1194,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6929877709051369860, guid: 0426bcee4509d4e5596fe8d560ec027a,
         type: 3}
+    - target: {fileID: 5647739802498129677, guid: d68c86ad4899f4d0bba6b368979674ec,
+        type: 3}
+      propertyPath: turnManager
+      value: 
+      objectReference: {fileID: 706799132}
     - target: {fileID: 5647739802498129679, guid: d68c86ad4899f4d0bba6b368979674ec,
         type: 3}
       propertyPath: m_LocalPosition.x

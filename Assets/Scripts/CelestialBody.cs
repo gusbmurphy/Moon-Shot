@@ -7,7 +7,10 @@ public class CelestialBody : MonoBehaviour
     private float yAxisMass = 50f;
     private float yAxisAttractionThreshold = 0.25f;
     private float yAxisAttractionMaxForce = 5f;
+
     public float attractionDistance = 5f;
+
+    private List<CelestialBody> touchingBodies = new List<CelestialBody>();
 
     public Rigidbody rb;
     void Start()
@@ -28,7 +31,7 @@ public class CelestialBody : MonoBehaviour
         {
             if (body != this && (body.transform.position - transform.position).magnitude < attractionDistance)
             {
-                Attract(body.GetComponent<Rigidbody>());
+                if (!touchingBodies.Contains(body)) Attract(body.GetComponent<Rigidbody>());
             }
         }
     }
@@ -53,6 +56,24 @@ public class CelestialBody : MonoBehaviour
         Vector3 force = direction.normalized * forceMagnitude;
 
         rbToAttract.AddForce(force);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
+        if (otherBody != null)
+        {
+            touchingBodies.Add(otherBody);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
+        if (otherBody != null)
+        {
+            touchingBodies.Remove(otherBody);
+        }
     }
 
     private void OnDrawGizmos()

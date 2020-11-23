@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class AdjustmentController : MonoBehaviour
 {
+    public TurnManager turnManager;
+
     public GameObject target;
 
     public GameObject indicatorToInstantiate;
@@ -162,5 +164,6 @@ public class AdjustmentController : MonoBehaviour
             (forceHandle.CurrentAdjustment * baseForce);
         target.GetComponent<Rigidbody>()
             .AddForceAtPosition(forceVector, indicator.transform.position);
+        turnManager.awaitingUser = false;
     }
 }
