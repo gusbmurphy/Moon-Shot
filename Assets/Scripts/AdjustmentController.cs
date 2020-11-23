@@ -34,8 +34,6 @@ public class AdjustmentController : MonoBehaviour
      * to the target by clicking on it. */
     private bool indicatorLocked = false;
 
-    private bool draggingIndicator = false;
-
     private Camera cam;
 
     private void Start()
@@ -96,7 +94,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
             xRotationHandle.objectToRotate = indicator;
-            xRotationHandle.objectToRotateAround = target;
+            xRotationHandle.objectToRotateAround = indicator;
             xRotationHandle.transform.SetParent(indicator.transform);
         }
 
@@ -109,7 +107,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
             yRotationHandle.objectToRotate = indicator;
-            yRotationHandle.objectToRotateAround = target;
+            yRotationHandle.objectToRotateAround = indicator;
             yRotationHandle.transform.SetParent(indicator.transform);
         }
 
@@ -160,8 +158,9 @@ public class AdjustmentController : MonoBehaviour
     private void Hit()
     {
         Vector3 forceVector =
-            (target.transform.position - indicator.transform.position) *
+            (indicator.transform.position - forceHandle.transform.position) *
             (forceHandle.CurrentAdjustment * baseForce);
-        target.GetComponent<Rigidbody>().AddForce(forceVector);
+        target.GetComponent<Rigidbody>()
+            .AddForceAtPosition(forceVector, indicator.transform.position);
     }
 }

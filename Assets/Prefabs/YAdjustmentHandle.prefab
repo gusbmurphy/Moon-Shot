@@ -107,5 +107,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
+  sensitivity: 200
   objectToRotate: {fileID: 0}
   objectToRotateAround: {fileID: 0}
