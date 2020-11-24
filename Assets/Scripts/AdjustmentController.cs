@@ -43,6 +43,59 @@ public class AdjustmentController : MonoBehaviour
     {
         cam = Camera.main;
 
+        InstantiateIndicatorAndHandles();
+
+        //InstantiateTrajectoryIndicators();
+    }
+
+    private void InstantiateIndicatorAndHandles()
+    {
+        indicator = Instantiate(indicatorToInstantiate);
+        indicator.SetActive(false);
+
+        forceHandle = Instantiate(
+                forceHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.forward * -0.5f,
+                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
+            );
+        forceHandle.transform.SetParent(indicator.transform);
+        forceHandle.gameObject.SetActive(false);
+
+        xRotationHandle = Instantiate(
+                xRotationHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.right * 0.5f,
+                indicator.transform.rotation
+            );
+        xRotationHandle.objectToRotate = indicator;
+        xRotationHandle.objectToRotateAround = indicator;
+        xRotationHandle.transform.SetParent(indicator.transform);
+        xRotationHandle.gameObject.SetActive(false);
+
+        yRotationHandle = Instantiate(
+                yRotationHandleToInstantiate,
+                indicator.transform.position +
+                indicator.transform.up * 0.5f,
+                indicator.transform.rotation
+            );
+        yRotationHandle.objectToRotate = indicator;
+        yRotationHandle.objectToRotateAround = indicator;
+        yRotationHandle.transform.SetParent(indicator.transform);
+        yRotationHandle.gameObject.SetActive(false);
+
+        goButton = Instantiate(
+                goButtonToInstantiate,
+                indicator.transform.position +
+                indicator.transform.up * 1f,
+                indicator.transform.rotation
+            );
+        goButton.transform.SetParent(indicator.transform);
+        goButton.gameObject.SetActive(false);
+    }
+
+    private void InstantiateTrajectoryIndicators()
+    {
         for (int i = 0; i < numOfTrajectoryIndicatorsToPool; i++)
         {
             GameObject newIndicator = Instantiate(trajectoryIndicatorToPool);
@@ -56,9 +109,14 @@ public class AdjustmentController : MonoBehaviour
         if (!indicatorLocked) HandleUnlockedIndicatorInput();
         else
         {
-            /* If the indicator has been locked, then we can instantiate the
+            /* If the indicator has been locked, then we can activate the
              * handles. */
-            CreateHandles();
+            forceHandle.gameObject.SetActive(true);
+            xRotationHandle.gameObject.SetActive(true);
+            yRotationHandle.gameObject.SetActive(true);
+            goButton.SetActive(true);
+
+            //CreateHandles();
 
             // If the user clicks the main indicator now, we hit the ball.
             if (Input.GetMouseButtonDown(0))
@@ -136,9 +194,9 @@ public class AdjustmentController : MonoBehaviour
             RaycastHit targetHit =
                 Array.Find(hits, hit => hit.collider.gameObject == target);
 
-            if (!indicator) indicator = Instantiate(indicatorToInstantiate);
             indicator.transform.position = targetHit.point;
             indicator.transform.LookAt(target.transform.position);
+            indicator.SetActive(true);
 
             /* Check to see if the user has clicked, meaning we lock the 
              * indicator. */
@@ -149,7 +207,7 @@ public class AdjustmentController : MonoBehaviour
         }
         else
         {
-            if (indicator != null) GameObject.Destroy(indicator.gameObject);
+            indicator.SetActive(false);
         }
     }
 
@@ -167,18 +225,23 @@ public class AdjustmentController : MonoBehaviour
         target.GetComponent<Rigidbody>()
             .AddForceAtPosition(forceVector, indicator.transform.position);
 
-        //HideHandles();
+        HideHandles();
 
         StartCoroutine(SetTurnManagerTimeout());
     }
 
     private void HideHandles()
     {
-        throw new NotImplementedException();
+        indicator.SetActive(false);
+        forceHandle.gameObject.SetActive(false);
+        xRotationHandle.gameObject.SetActive(false);
+        yRotationHandle.gameObject.SetActive(false);
+        goButton.SetActive(false);
     }
 
     private IEnumerator SetTurnManagerTimeout()
     {
+        turnManager.awaitingUser = false;
         yield return new WaitForSeconds(1f);
         turnManager.shouldCheckForMovement = true;
     }

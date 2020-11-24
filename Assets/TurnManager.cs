@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public bool shouldCheckForMovement = false;
+    public bool awaitingUser = true;
 
     private int _turn;
     private int Turn
@@ -38,6 +39,7 @@ public class TurnManager : MonoBehaviour
             if (!BodiesAreMoving())
             {
                 shouldCheckForMovement = false;
+                awaitingUser = true;
                 Turn++;
             }
         }
