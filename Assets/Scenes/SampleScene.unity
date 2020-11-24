@@ -316,8 +316,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7707759bd60f149acbcc5e7489f90873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementThreshhold: 0.01
   turnText: {fileID: 1699902470}
+  shouldCheckForMovement: 0
   awaitingUser: 1
+  adjController: {fileID: 1592611415}
 --- !u!4 &706799133
 Transform:
   m_ObjectHideFlags: 0
@@ -547,6 +550,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1484772894}
   m_CullTransparentMesh: 0
+--- !u!114 &1592611415 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5647739802498129677, guid: d68c86ad4899f4d0bba6b368979674ec,
+    type: 3}
+  m_PrefabInstance: {fileID: 5647739801986024275}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9730cb63f1e1147f19da6abbe6eaffda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1665595077
 GameObject:
   m_ObjectHideFlags: 0

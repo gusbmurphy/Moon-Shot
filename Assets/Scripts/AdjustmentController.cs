@@ -35,7 +35,7 @@ public class AdjustmentController : MonoBehaviour
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
-    private bool indicatorLocked = false;
+    public bool indicatorLocked = false;
 
     private Camera cam;
 

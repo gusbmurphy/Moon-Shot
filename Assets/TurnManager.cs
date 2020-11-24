@@ -12,6 +12,7 @@ public class TurnManager : MonoBehaviour
     public Text turnText;
     public bool shouldCheckForMovement = false;
     public bool awaitingUser = true;
+    public AdjustmentController adjController;
 
     private int _turn;
     private int Turn
@@ -38,11 +39,17 @@ public class TurnManager : MonoBehaviour
         {
             if (!BodiesAreMoving())
             {
-                shouldCheckForMovement = false;
-                awaitingUser = true;
-                Turn++;
+                EndTurn();
             }
         }
+    }
+
+    private void EndTurn()
+    {
+        shouldCheckForMovement = false;
+        awaitingUser = true;
+        Turn++;
+        adjController.indicatorLocked = false;
     }
 
     private bool BodiesAreMoving()
