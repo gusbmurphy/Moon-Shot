@@ -22,11 +22,12 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    private Rigidbody[] rbs;
+    private CelestialBody[] bodies;
 
     private void Start()
     {
         Turn = 1;
+        bodies = FindObjectsOfType<CelestialBody>();
     }
 
     private void FixedUpdate()
@@ -39,8 +40,7 @@ public class TurnManager : MonoBehaviour
 
     private void CheckForEndOfTurn()
     {
-        if (rbs == null) rbs = FindObjectsOfType<Rigidbody>();
-        if (!Array.Exists<Rigidbody>(rbs, rb => !rb.IsSleeping() && rb.velocity.magnitude > 0.01f && rb.angularVelocity.magnitude > 0.01f))
+        if (Array.Exists(bodies, body => body.GetComponent<Rigidbody>().velocity.magnitude > 0f || body.GetComponent<Rigidbody>().angularVelocity.magnitude > 0f) == false)
         {
             print("Turn complete!");
             awaitingUser = true;

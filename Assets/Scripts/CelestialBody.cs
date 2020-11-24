@@ -7,21 +7,39 @@ public class CelestialBody : MonoBehaviour
     private float yAxisMass = 50f;
     private float yAxisAttractionThreshold = 0.25f;
     private float yAxisAttractionMaxForce = 5f;
+    private Rigidbody rb;
+    private float movementThreshhold = 0.01f;
 
     public float attractionDistance = 5f;
 
     private List<CelestialBody> touchingBodies = new List<CelestialBody>();
+    private Vector3 positionLastFrame;
 
-    public Rigidbody rb;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        positionLastFrame = transform.position;
     }
 
     private void FixedUpdate()
     {
         AttractBodies();
         if (transform.position.y < -yAxisAttractionThreshold || transform.position.y > yAxisAttractionThreshold) ApplyYAxisAttraction();
+
+        if (rb.velocity.magnitude < 0.01f)
+        {
+            rb.velocity = new Vector3();
+        }
+
+        if (rb.angularVelocity.magnitude < 0.01f)
+        {
+            rb.angularVelocity = new Vector3();
+        }
+    }
+
+    private void LateUpdate()
+    {
+        positionLastFrame = transform.position;
     }
 
     private void AttractBodies()
@@ -63,6 +81,7 @@ public class CelestialBody : MonoBehaviour
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
         {
+            print("Adding " + otherBody.gameObject.name + " to " + gameObject.name + "s touching list");
             touchingBodies.Add(otherBody);
         }
     }
@@ -72,6 +91,7 @@ public class CelestialBody : MonoBehaviour
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
         {
+            print("Removing " + otherBody.gameObject.name + " from " + gameObject.name + "s touching list");
             touchingBodies.Remove(otherBody);
         }
     }
@@ -83,5 +103,10 @@ public class CelestialBody : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
+    }
+
+    public bool IsMoving()
+    {
+        return (transform.position - positionLastFrame).magnitude < movementThreshhold;
     }
 }
