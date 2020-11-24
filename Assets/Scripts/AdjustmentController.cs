@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -162,8 +163,23 @@ public class AdjustmentController : MonoBehaviour
         Vector3 forceVector =
             (indicator.transform.position - forceHandle.transform.position) *
             (forceHandle.CurrentAdjustment * baseForce);
+
         target.GetComponent<Rigidbody>()
             .AddForceAtPosition(forceVector, indicator.transform.position);
-        turnManager.awaitingUser = false;
+
+        //HideHandles();
+
+        StartCoroutine(SetTurnManagerTimeout());
+    }
+
+    private void HideHandles()
+    {
+        throw new NotImplementedException();
+    }
+
+    private IEnumerator SetTurnManagerTimeout()
+    {
+        yield return new WaitForSeconds(1f);
+        turnManager.shouldCheckForMovement = true;
     }
 }

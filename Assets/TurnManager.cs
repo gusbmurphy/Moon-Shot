@@ -8,8 +8,9 @@ using System;
 
 public class TurnManager : MonoBehaviour
 {
+    public float movementThreshhold = 0.01f;
     public Text turnText;
-    public bool awaitingUser = true;
+    public bool shouldCheckForMovement = false;
 
     private int _turn;
     private int Turn
@@ -32,20 +33,25 @@ public class TurnManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!awaitingUser)
+        if (shouldCheckForMovement)
         {
-            CheckForEndOfTurn();
+            if (!BodiesAreMoving())
+            {
+                shouldCheckForMovement = false;
+                Turn++;
+            }
         }
     }
 
-    private void CheckForEndOfTurn()
+    private bool BodiesAreMoving()
     {
-        if (Array.Exists(bodies, body => body.GetComponent<Rigidbody>().velocity.magnitude > 0f || body.GetComponent<Rigidbody>().angularVelocity.magnitude > 0f) == false)
+        bool atLeastOneIsMoving = Array.Exists<CelestialBody>(bodies, body =>
         {
-            print("Turn complete!");
-            awaitingUser = true;
-            Turn++;
-        }
+            Rigidbody rb = body.GetComponent<Rigidbody>();
+            return rb.velocity.magnitude > movementThreshhold ||
+                rb.angularVelocity.magnitude > movementThreshhold;
+        });
+        return atLeastOneIsMoving;
     }
 
     public void RestartLevel()
