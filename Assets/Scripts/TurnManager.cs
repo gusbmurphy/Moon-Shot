@@ -14,6 +14,7 @@ public class TurnManager : MonoBehaviour
     public bool shouldCheckForMovement = false;
     public bool awaitingUser = true;
     public AdjustmentController adjController;
+    public Text completionText;
 
     private ObjectiveDefinition[] objectives;
 
@@ -38,12 +39,14 @@ public class TurnManager : MonoBehaviour
         objectives = FindObjectsOfType<ObjectiveDefinition>();
         foreach (ObjectiveDefinition objective in objectives)
         {
-            objective.completed.AddListener(UpdateObjectivesText);
+            objective.completed.AddListener(UpdateObjectives);
         }
-        UpdateObjectivesText();
+        UpdateObjectives();
+
+        completionText.gameObject.SetActive(false);
     }
 
-    private void UpdateObjectivesText()
+    private void UpdateObjectives()
     {
         String description = "";
 
@@ -57,6 +60,27 @@ public class TurnManager : MonoBehaviour
         }
 
         objectivesText.text = description;
+
+        if (Array.TrueForAll<ObjectiveDefinition>(objectives,
+            objective => objective.IsCompleted))
+        {
+            StartCoroutine(CompleteLevel());
+        }
+    }
+
+    private IEnumerator CompleteLevel()
+    {
+        completionText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        else
+            GameFinished();
+    }
+
+    private void GameFinished()
+    {
+        throw new NotImplementedException();
     }
 
     private void FixedUpdate()
