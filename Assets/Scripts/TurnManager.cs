@@ -10,9 +10,12 @@ public class TurnManager : MonoBehaviour
 {
     public float movementThreshhold = 0.01f;
     public Text turnText;
+    public Text objectivesText;
     public bool shouldCheckForMovement = false;
     public bool awaitingUser = true;
     public AdjustmentController adjController;
+
+    private ObjectiveDefinition[] objectives;
 
     private int _turn;
     private int Turn
@@ -31,17 +34,34 @@ public class TurnManager : MonoBehaviour
     {
         Turn = 1;
         bodies = FindObjectsOfType<CelestialBody>();
+
+        objectives = FindObjectsOfType<ObjectiveDefinition>();
+        foreach (ObjectiveDefinition objective in objectives)
+        {
+            objective.completed.AddListener(UpdateObjectivesText);
+        }
+        UpdateObjectivesText();
+    }
+
+    private void UpdateObjectivesText()
+    {
+        String description = "";
+
+        for (int i = 0; i < objectives.Length; i++)
+        {
+            ObjectiveDefinition objective = objectives[i];
+            if (objective.IsCompleted) description += "X";
+            description += "Get " + objective.gameObject.name +
+                " to " + objective.goal.gameObject.name;
+            if (i + 1 != objectives.Length) description += Environment.NewLine;
+        }
+
+        objectivesText.text = description;
     }
 
     private void FixedUpdate()
     {
-        if (shouldCheckForMovement)
-        {
-            if (!BodiesAreMoving())
-            {
-                EndTurn();
-            }
-        }
+        if (shouldCheckForMovement && !BodiesAreMoving()) EndTurn();
     }
 
     private void EndTurn()
