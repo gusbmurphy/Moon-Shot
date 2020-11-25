@@ -72,10 +72,15 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 02a30d80762fb6c4c924322f9faf5712, type: 2}
+    - target: {fileID: 1548053940937960811, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
     - target: {fileID: 1548053940937960820, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66,
         type: 3}
       propertyPath: m_Name
-      value: Planet
+      value: Blue Gas Planet
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66, type: 3}
