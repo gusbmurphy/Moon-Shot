@@ -10,9 +10,13 @@ public class TurnManager : MonoBehaviour
 {
     public float movementThreshhold = 0.01f;
     public Text turnText;
+    public Text objectivesText;
     public bool shouldCheckForMovement = false;
     public bool awaitingUser = true;
     public AdjustmentController adjController;
+    public Text completionText;
+
+    private ObjectiveDefinition[] objectives;
 
     private int _turn;
     private int Turn
@@ -31,17 +35,57 @@ public class TurnManager : MonoBehaviour
     {
         Turn = 1;
         bodies = FindObjectsOfType<CelestialBody>();
+
+        objectives = FindObjectsOfType<ObjectiveDefinition>();
+        foreach (ObjectiveDefinition objective in objectives)
+        {
+            objective.completed.AddListener(UpdateObjectives);
+        }
+        UpdateObjectives();
+
+        completionText.gameObject.SetActive(false);
+    }
+
+    private void UpdateObjectives()
+    {
+        String description = "";
+
+        for (int i = 0; i < objectives.Length; i++)
+        {
+            ObjectiveDefinition objective = objectives[i];
+            if (objective.IsCompleted) description += "X";
+            description += "Get " + objective.gameObject.name +
+                " to " + objective.goal.gameObject.name;
+            if (i + 1 != objectives.Length) description += Environment.NewLine;
+        }
+
+        objectivesText.text = description;
+
+        if (Array.TrueForAll<ObjectiveDefinition>(objectives,
+            objective => objective.IsCompleted))
+        {
+            StartCoroutine(CompleteLevel());
+        }
+    }
+
+    private IEnumerator CompleteLevel()
+    {
+        completionText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        else
+            GameFinished();
+    }
+
+    private void GameFinished()
+    {
+        throw new NotImplementedException();
     }
 
     private void FixedUpdate()
     {
-        if (shouldCheckForMovement)
-        {
-            if (!BodiesAreMoving())
-            {
-                EndTurn();
-            }
-        }
+        if (shouldCheckForMovement && !BodiesAreMoving()) EndTurn();
     }
 
     private void EndTurn()
