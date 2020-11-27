@@ -69,7 +69,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
         xRotationHandle.objectToRotate = indicator;
-        xRotationHandle.objectToRotateAround = indicator;
+        xRotationHandle.objectToRotateAround = target;
         xRotationHandle.transform.SetParent(indicator.transform);
         xRotationHandle.gameObject.SetActive(false);
 
@@ -80,7 +80,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
         yRotationHandle.objectToRotate = indicator;
-        yRotationHandle.objectToRotateAround = indicator;
+        yRotationHandle.objectToRotateAround = target;
         yRotationHandle.transform.SetParent(indicator.transform);
         yRotationHandle.gameObject.SetActive(false);
 
@@ -130,56 +130,6 @@ public class AdjustmentController : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-
-    private void CreateHandles()
-    {
-        if (!forceHandle)
-        {
-            forceHandle = Instantiate(
-                forceHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.forward * -0.5f,
-                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
-            );
-            forceHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!xRotationHandle)
-        {
-            xRotationHandle = Instantiate(
-                xRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.right * 0.5f,
-                indicator.transform.rotation
-            );
-            xRotationHandle.objectToRotate = indicator;
-            xRotationHandle.objectToRotateAround = indicator;
-            xRotationHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!yRotationHandle)
-        {
-            yRotationHandle = Instantiate(
-                yRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 0.5f,
-                indicator.transform.rotation
-            );
-            yRotationHandle.objectToRotate = indicator;
-            yRotationHandle.objectToRotateAround = indicator;
-            yRotationHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!goButton)
-        {
-            goButton = Instantiate(
-                goButtonToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 1f,
-                indicator.transform.rotation
-            );
         }
     }
 
