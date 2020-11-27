@@ -194,7 +194,17 @@ public class AdjustmentController : MonoBehaviour
             RaycastHit targetHit =
                 Array.Find(hits, hit => hit.collider.gameObject == target);
 
-            indicator.transform.position = targetHit.point;
+            /* Move the hit position to be in the XZ-plane and on the surface of
+             * the target. */
+            Vector3 point = targetHit.point;
+            point.y = target.transform.position.y;
+            Vector3 targetToPointNormal =
+                (point - target.transform.position).normalized;
+            float targetRadius = target.GetComponent<SphereCollider>().radius;
+            point = target.transform.position +
+                (targetToPointNormal * targetRadius);
+
+            indicator.transform.position = point;
             indicator.transform.LookAt(target.transform.position);
             indicator.SetActive(true);
 
