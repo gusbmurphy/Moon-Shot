@@ -8,16 +8,20 @@ public class ObjectiveDefinition : MonoBehaviour
     public GameObject goal;
 
     private bool _isCompleted = false;
-    public bool IsCompleted => _isCompleted;
+    public bool IsCompleted
+    {
+        get { return _isCompleted; }
+        set
+        {
+            _isCompleted = value;
+            if (_isCompleted) completed.Invoke();
+        }
+    }
 
     public UnityEvent completed;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.gameObject == goal)
-        {
-            _isCompleted = true;
-            completed.Invoke();
-        }
+        if (other.gameObject == goal) IsCompleted = true;
     }
 }
