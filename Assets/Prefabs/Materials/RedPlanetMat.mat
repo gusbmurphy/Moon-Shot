@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoalPlanet (Succ)
+  m_Name: RedPlanetMat
   m_Shader: {fileID: -6465566751694194690, guid: 0b152f06f36ebac4491641d07ee4d71f,
     type: 3}
   m_ShaderKeywords: 
