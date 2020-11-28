@@ -28,10 +28,13 @@ public class AdjustmentController : MonoBehaviour
     private GameObject goButton;
 
     public float baseForce = 3000f;
+    public float aimLineLength = 5f;
 
     public GameObject trajectoryIndicatorToPool;
     public int numOfTrajectoryIndicatorsToPool = 5;
     private List<GameObject> trajectoryIndicatorPool = new List<GameObject>();
+
+    public LineRenderer lineRenderer;
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
@@ -39,9 +42,19 @@ public class AdjustmentController : MonoBehaviour
 
     private Camera cam;
 
+    private void SetAimLine()
+    {
+        lineRenderer.SetPositions(new Vector3[] {
+            target.transform.position,
+            target.transform.position - (indicator.transform.position - target.transform.position).normalized * aimLineLength
+            });
+    }
+
     private void Start()
     {
         cam = Camera.main;
+
+        lineRenderer.gameObject.SetActive(false);
 
         InstantiateIndicatorAndHandles();
 
@@ -69,7 +82,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
         xRotationHandle.objectToRotate = indicator;
-        xRotationHandle.objectToRotateAround = indicator;
+        xRotationHandle.objectToRotateAround = target;
         xRotationHandle.transform.SetParent(indicator.transform);
         xRotationHandle.gameObject.SetActive(false);
 
@@ -80,7 +93,7 @@ public class AdjustmentController : MonoBehaviour
                 indicator.transform.rotation
             );
         yRotationHandle.objectToRotate = indicator;
-        yRotationHandle.objectToRotateAround = indicator;
+        yRotationHandle.objectToRotateAround = target;
         yRotationHandle.transform.SetParent(indicator.transform);
         yRotationHandle.gameObject.SetActive(false);
 
@@ -116,7 +129,7 @@ public class AdjustmentController : MonoBehaviour
             yRotationHandle.gameObject.SetActive(true);
             goButton.SetActive(true);
 
-            //CreateHandles();
+            SetAimLine(); // TODO: This shouldn't be called every frame.
 
             // If the user clicks the main indicator now, we hit the ball.
             if (Input.GetMouseButtonDown(0))
@@ -133,56 +146,6 @@ public class AdjustmentController : MonoBehaviour
         }
     }
 
-    private void CreateHandles()
-    {
-        if (!forceHandle)
-        {
-            forceHandle = Instantiate(
-                forceHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.forward * -0.5f,
-                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
-            );
-            forceHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!xRotationHandle)
-        {
-            xRotationHandle = Instantiate(
-                xRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.right * 0.5f,
-                indicator.transform.rotation
-            );
-            xRotationHandle.objectToRotate = indicator;
-            xRotationHandle.objectToRotateAround = indicator;
-            xRotationHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!yRotationHandle)
-        {
-            yRotationHandle = Instantiate(
-                yRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 0.5f,
-                indicator.transform.rotation
-            );
-            yRotationHandle.objectToRotate = indicator;
-            yRotationHandle.objectToRotateAround = indicator;
-            yRotationHandle.transform.SetParent(indicator.transform);
-        }
-
-        if (!goButton)
-        {
-            goButton = Instantiate(
-                goButtonToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 1f,
-                indicator.transform.rotation
-            );
-        }
-    }
-
     private void HandleUnlockedIndicatorInput()
     {
         // Check if the mouse is over the target.
@@ -194,7 +157,17 @@ public class AdjustmentController : MonoBehaviour
             RaycastHit targetHit =
                 Array.Find(hits, hit => hit.collider.gameObject == target);
 
-            indicator.transform.position = targetHit.point;
+            /* Move the hit position to be in the XZ-plane and on the surface of
+             * the target. */
+            Vector3 point = targetHit.point;
+            point.y = target.transform.position.y;
+            Vector3 targetToPointNormal =
+                (point - target.transform.position).normalized;
+            float targetRadius = target.GetComponent<SphereCollider>().radius;
+            point = target.transform.position +
+                (targetToPointNormal * targetRadius);
+
+            indicator.transform.position = point;
             indicator.transform.LookAt(target.transform.position);
             indicator.SetActive(true);
 
@@ -204,10 +177,14 @@ public class AdjustmentController : MonoBehaviour
             {
                 indicatorLocked = true;
             }
+
+            SetAimLine();
+            lineRenderer.gameObject.SetActive(true);
         }
         else
         {
             indicator.SetActive(false);
+            lineRenderer.gameObject.SetActive(false);
         }
     }
 
@@ -226,6 +203,7 @@ public class AdjustmentController : MonoBehaviour
             .AddForceAtPosition(forceVector, indicator.transform.position);
 
         HideHandles();
+        lineRenderer.gameObject.SetActive(false);
 
         StartCoroutine(SetTurnManagerTimeout());
     }
