@@ -15,11 +15,7 @@ GameObject:
   - component: {fileID: 6929877709051369859}
   - component: {fileID: 6929877709051369918}
   - component: {fileID: 1741052700}
-  - component: {fileID: 1741052701}
-  - component: {fileID: 1741052707}
   - component: {fileID: 4983734119794205379}
-  - component: {fileID: 7136230839524989448}
-  - component: {fileID: 3066931672549971059}
   m_Layer: 8
   m_Name: Cue Ball
   m_TagString: CueBall
@@ -142,32 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d70866151e7d4b9d94ca4e0c0f9730f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1741052701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6929877709051369860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 737648d9133cb420a8322ecc8a2ddc31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinFactor: 0.01
---- !u!114 &1741052707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6929877709051369860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 737648d9133cb420a8322ecc8a2ddc31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinFactor: 0.01
 --- !u!114 &4983734119794205379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,29 +150,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d70866151e7d4b9d94ca4e0c0f9730f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7136230839524989448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6929877709051369860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 737648d9133cb420a8322ecc8a2ddc31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinFactor: 0.01
---- !u!114 &3066931672549971059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6929877709051369860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 737648d9133cb420a8322ecc8a2ddc31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinFactor: 0.01
