@@ -34,7 +34,7 @@ public class AdjustmentController : MonoBehaviour
     public int numOfTrajectoryIndicatorsToPool = 5;
     private List<GameObject> trajectoryIndicatorPool = new List<GameObject>();
 
-    private LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
@@ -54,7 +54,7 @@ public class AdjustmentController : MonoBehaviour
     {
         cam = Camera.main;
 
-        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.gameObject.SetActive(false);
 
         InstantiateIndicatorAndHandles();
 
@@ -129,7 +129,7 @@ public class AdjustmentController : MonoBehaviour
             yRotationHandle.gameObject.SetActive(true);
             goButton.SetActive(true);
 
-            //CreateHandles();
+            SetAimLine(); // TODO: This shouldn't be called every frame.
 
             // If the user clicks the main indicator now, we hit the ball.
             if (Input.GetMouseButtonDown(0))
@@ -179,10 +179,12 @@ public class AdjustmentController : MonoBehaviour
             }
 
             SetAimLine();
+            lineRenderer.gameObject.SetActive(true);
         }
         else
         {
             indicator.SetActive(false);
+            lineRenderer.gameObject.SetActive(false);
         }
     }
 
@@ -201,6 +203,7 @@ public class AdjustmentController : MonoBehaviour
             .AddForceAtPosition(forceVector, indicator.transform.position);
 
         HideHandles();
+        lineRenderer.gameObject.SetActive(false);
 
         StartCoroutine(SetTurnManagerTimeout());
     }
