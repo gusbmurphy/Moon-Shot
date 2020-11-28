@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: 7aaf7d83c4eaf1748920a07a17be7204
+guid: 896dc098fd89ae940afe51cbec5d6269
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tip
+    second: {fileID: 2100000, guid: b27fbc6af55f2d34982ba84f5f1a37bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tippy_tip
+    second: {fileID: 2100000, guid: c07f5fcd0d5a2924aa8fcca8ea5fdcaa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 3fd0b5a513a00c24f8f5edd86ed2e780, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
