@@ -28,10 +28,13 @@ public class AdjustmentController : MonoBehaviour
     private GameObject goButton;
 
     public float baseForce = 3000f;
+    public float aimLineLength = 5f;
 
     public GameObject trajectoryIndicatorToPool;
     public int numOfTrajectoryIndicatorsToPool = 5;
     private List<GameObject> trajectoryIndicatorPool = new List<GameObject>();
+
+    private LineRenderer lineRenderer;
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
@@ -39,9 +42,19 @@ public class AdjustmentController : MonoBehaviour
 
     private Camera cam;
 
+    private void SetAimLine()
+    {
+        lineRenderer.SetPositions(new Vector3[] {
+            target.transform.position,
+            target.transform.position - (indicator.transform.position - target.transform.position).normalized * aimLineLength
+            });
+    }
+
     private void Start()
     {
         cam = Camera.main;
+
+        lineRenderer = GetComponent<LineRenderer>();
 
         InstantiateIndicatorAndHandles();
 
@@ -164,6 +177,8 @@ public class AdjustmentController : MonoBehaviour
             {
                 indicatorLocked = true;
             }
+
+            SetAimLine();
         }
         else
         {
