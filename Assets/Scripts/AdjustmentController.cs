@@ -8,7 +8,11 @@ using UnityEngine;
 
 public class AdjustmentController : MonoBehaviour
 {
+    public float xSensitivity = 1.0f;
+
     public TurnManager turnManager;
+
+    public Cue cue;
 
     public GameObject target;
 
@@ -56,56 +60,61 @@ public class AdjustmentController : MonoBehaviour
 
         lineRenderer.gameObject.SetActive(false);
 
-        InstantiateIndicatorAndHandles();
+        cue.transform.position = target.transform.position - target.transform.forward * target.GetComponent<SphereCollider>().radius;
+        cue.transform.LookAt(target.transform.position);
+        cam.transform.position = cue.cameraSocket.position;
+        cam.transform.LookAt(target.transform.position);
+
+        //InstantiateIndicatorAndHandles();
 
         //InstantiateTrajectoryIndicators();
     }
 
-    private void InstantiateIndicatorAndHandles()
-    {
-        indicator = Instantiate(indicatorToInstantiate);
-        indicator.SetActive(false);
+    //private void InstantiateIndicatorAndHandles()
+    //{
+    //    indicator = Instantiate(indicatorToInstantiate);
+    //    indicator.SetActive(false);
 
-        forceHandle = Instantiate(
-                forceHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.forward * -0.5f,
-                indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
-            );
-        forceHandle.transform.SetParent(indicator.transform);
-        forceHandle.gameObject.SetActive(false);
+    //    forceHandle = Instantiate(
+    //            forceHandleToInstantiate,
+    //            indicator.transform.position +
+    //            indicator.transform.forward * -0.5f,
+    //            indicator.transform.rotation * Quaternion.Euler(0, 180f, 0)
+    //        );
+    //    forceHandle.transform.SetParent(indicator.transform);
+    //    forceHandle.gameObject.SetActive(false);
 
-        xRotationHandle = Instantiate(
-                xRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.right * 0.5f,
-                indicator.transform.rotation
-            );
-        xRotationHandle.objectToRotate = indicator;
-        xRotationHandle.objectToRotateAround = target;
-        xRotationHandle.transform.SetParent(indicator.transform);
-        xRotationHandle.gameObject.SetActive(false);
+    //    xRotationHandle = Instantiate(
+    //            xRotationHandleToInstantiate,
+    //            indicator.transform.position +
+    //            indicator.transform.right * 0.5f,
+    //            indicator.transform.rotation
+    //        );
+    //    xRotationHandle.objectToRotate = indicator;
+    //    xRotationHandle.objectToRotateAround = target;
+    //    xRotationHandle.transform.SetParent(indicator.transform);
+    //    xRotationHandle.gameObject.SetActive(false);
 
-        yRotationHandle = Instantiate(
-                yRotationHandleToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 0.5f,
-                indicator.transform.rotation
-            );
-        yRotationHandle.objectToRotate = indicator;
-        yRotationHandle.objectToRotateAround = target;
-        yRotationHandle.transform.SetParent(indicator.transform);
-        yRotationHandle.gameObject.SetActive(false);
+    //    yRotationHandle = Instantiate(
+    //            yRotationHandleToInstantiate,
+    //            indicator.transform.position +
+    //            indicator.transform.up * 0.5f,
+    //            indicator.transform.rotation
+    //        );
+    //    yRotationHandle.objectToRotate = indicator;
+    //    yRotationHandle.objectToRotateAround = target;
+    //    yRotationHandle.transform.SetParent(indicator.transform);
+    //    yRotationHandle.gameObject.SetActive(false);
 
-        goButton = Instantiate(
-                goButtonToInstantiate,
-                indicator.transform.position +
-                indicator.transform.up * 1f,
-                indicator.transform.rotation
-            );
-        goButton.transform.SetParent(indicator.transform);
-        goButton.gameObject.SetActive(false);
-    }
+    //    goButton = Instantiate(
+    //            goButtonToInstantiate,
+    //            indicator.transform.position +
+    //            indicator.transform.up * 1f,
+    //            indicator.transform.rotation
+    //        );
+    //    goButton.transform.SetParent(indicator.transform);
+    //    goButton.gameObject.SetActive(false);
+    //}
 
     private void InstantiateTrajectoryIndicators()
     {
@@ -119,29 +128,55 @@ public class AdjustmentController : MonoBehaviour
 
     private void Update()
     {
-        if (!indicatorLocked) HandleUnlockedIndicatorInput();
+        HandleMouseInput();
+
+        //if (!indicatorLocked) HandleUnlockedIndicatorInput();
+        //else
+        //{
+        //    /* If the indicator has been locked, then we can activate the
+        //     * handles. */
+        //    forceHandle.gameObject.SetActive(true);
+        //    xRotationHandle.gameObject.SetActive(true);
+        //    yRotationHandle.gameObject.SetActive(true);
+        //    goButton.SetActive(true);
+
+        //    SetAimLine(); // TODO: This shouldn't be called every frame.
+
+        //    // If the user clicks the main indicator now, we hit the ball.
+        //    if (Input.GetMouseButtonDown(0))
+        //    {
+        //        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        //        if (Physics.Raycast(ray, out RaycastHit hit))
+        //        {
+        //            if (hit.collider.gameObject == goButton)
+        //            {
+        //                Hit();
+        //            }
+        //        }
+        //    }
+        //}
+    }
+
+    private void HandleMouseInput()
+    {
+        if (Input.GetMouseButton(1))
+        {
+            float yInput = Input.GetAxis("Mouse Y");
+            if (yInput > 0 || yInput < 0)
+            {
+                cue.transform.RotateAround(target.transform.position, cue.transform.right, yInput);
+                cam.transform.position = cue.cameraSocket.position;
+                cam.transform.LookAt(target.transform.position);
+            }
+        }
         else
         {
-            /* If the indicator has been locked, then we can activate the
-             * handles. */
-            forceHandle.gameObject.SetActive(true);
-            xRotationHandle.gameObject.SetActive(true);
-            yRotationHandle.gameObject.SetActive(true);
-            goButton.SetActive(true);
-
-            SetAimLine(); // TODO: This shouldn't be called every frame.
-
-            // If the user clicks the main indicator now, we hit the ball.
-            if (Input.GetMouseButtonDown(0))
+            float xInput = Input.GetAxis("Mouse X");
+            if (xInput > 0 || xInput < 0)
             {
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    if (hit.collider.gameObject == goButton)
-                    {
-                        Hit();
-                    }
-                }
+                cue.transform.RotateAround(target.transform.position, Vector3.up, -xInput * xSensitivity);
+                cam.transform.position = cue.cameraSocket.position;
+                cam.transform.LookAt(target.transform.position);
             }
         }
     }
@@ -183,7 +218,7 @@ public class AdjustmentController : MonoBehaviour
         }
         else
         {
-            indicator.SetActive(false);
+            //indicator.SetActive(false);
             lineRenderer.gameObject.SetActive(false);
         }
     }
