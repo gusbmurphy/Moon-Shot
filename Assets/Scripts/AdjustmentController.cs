@@ -9,6 +9,10 @@ using UnityEngine;
 public class AdjustmentController : MonoBehaviour
 {
     public float xSensitivity = 1.0f;
+    public float ySensitivity = 1.0f;
+
+    public float clickTimeout = 0.2f;
+    private float initialClickTime;
 
     public TurnManager turnManager;
 
@@ -24,6 +28,11 @@ public class AdjustmentController : MonoBehaviour
     private List<GameObject> trajectoryIndicatorPool = new List<GameObject>();
 
     public LineRenderer lineRenderer;
+
+    public float pitchResetTime = 0.5f;
+    private bool isResetingPitch = false;
+    private float pitchResetTimer = 0.0f;
+    private float pitchResetBeginningRotation;
 
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
@@ -45,10 +54,8 @@ public class AdjustmentController : MonoBehaviour
 
         lineRenderer.gameObject.SetActive(false);
 
-        cue.transform.position = target.transform.position - target.transform.forward * target.GetComponent<SphereCollider>().radius;
-        cue.transform.LookAt(target.transform.position);
-        cam.transform.position = cue.cameraSocket.position;
-        cam.transform.LookAt(target.transform.position);
+        cue.transform.position = target.transform.position;
+        cue.transform.rotation = target.transform.rotation;
 
         //InstantiateTrajectoryIndicators();
     }
@@ -66,17 +73,52 @@ public class AdjustmentController : MonoBehaviour
     private void Update()
     {
         HandleMouseInput();
+
+        //if (isResetingPitch)
+        //{
+        //    float currentRotation;
+        //    pitchResetTimer += Time.deltaTime;
+
+        //    if (pitchResetTimer < pitchResetTime)
+        //    {
+        //        currentRotation = Mathf.Lerp(pitchResetBeginningRotation,
+        //            0.0f, pitchResetTimer / pitchResetTime);
+        //    }
+        //    else
+        //    {
+        //        currentRotation = 0.0f;
+        //        isResetingPitch = false;
+        //    }
+
+        //    cue.transform.rotation = Quaternion.Euler(
+        //        currentRotation,
+        //        cue.transform.rotation.y,
+        //        cue.transform.rotation.z
+        //        );
+        //}
     }
 
     private void HandleMouseInput()
     {
+        // If the user presses the RMB, we set the time it happened...
+        if (Input.GetMouseButtonDown(1))
+            initialClickTime = Time.time;
+
+        // If the user releases the RMB, see if it counts as a click...
+        if (Input.GetMouseButtonUp(1) &&
+            Time.time - initialClickTime < clickTimeout &&
+            (cue.transform.rotation.x > 0 || cue.transform.rotation.x < 0))
+        {
+            ResetPitch();
+        }
+
         // If the user is holding the right click, we adjust pitch...
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1) && !isResetingPitch)
         {
             float yInput = Input.GetAxis("Mouse Y");
             if (yInput > 0 || yInput < 0)
             {
-                cue.transform.RotateAround(target.transform.position, cue.transform.right, yInput);
+                cue.transform.Rotate(yInput * ySensitivity, 0, 0);
                 cam.transform.position = cue.cameraSocket.position;
                 cam.transform.LookAt(target.transform.position);
             }
@@ -87,6 +129,7 @@ public class AdjustmentController : MonoBehaviour
             float xInput = Input.GetAxis("Mouse X");
             if (xInput > 0 || xInput < 0)
             {
+                //cue.transform.Rotate(Vector3.up, -xInput * xSensitivity);
                 cue.transform.RotateAround(target.transform.position, Vector3.up, -xInput * xSensitivity);
                 cam.transform.position = cue.cameraSocket.position;
                 cam.transform.LookAt(target.transform.position);
@@ -102,6 +145,13 @@ public class AdjustmentController : MonoBehaviour
         }
     }
 
+    private void ResetPitch()
+    {
+        throw new NotImplementedException();
+        //isResetingPitch = true;
+        //pitchResetBeginningRotation = cue.transform.rotation.x;
+    }
+
     private void ShowTrajectory(Vector3 force)
     {
         throw new NotImplementedException();
@@ -109,9 +159,7 @@ public class AdjustmentController : MonoBehaviour
 
     private void Hit()
     {
-        Vector3 forceVector =
-            (target.transform.position - cue.transform.position).normalized *
-            baseForce;
+        Vector3 forceVector = cue.transform.forward * baseForce;
 
         target.GetComponent<Rigidbody>()
             .AddForce(forceVector);

@@ -139,20 +139,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b64e8ceb2b57444385b75dea9c73451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xSensitivity: 1
+  ySensitivity: 1
+  clickTimeout: 0.2
   turnManager: {fileID: 706799132}
   cue: {fileID: 1464137890}
   target: {fileID: 1741052699}
-  indicatorToInstantiate: {fileID: 0}
-  forceHandleToInstantiate: {fileID: 0}
-  xRotationHandleToInstantiate: {fileID: 0}
-  yRotationHandleToInstantiate: {fileID: 0}
-  goButtonToInstantiate: {fileID: 0}
   baseForce: 3000
   aimLineLength: 5
   trajectoryIndicatorToPool: {fileID: 0}
   numOfTrajectoryIndicatorsToPool: 5
   lineRenderer: {fileID: 1668371202}
   indicatorLocked: 0
+  pitchResetTime: 5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,17 +415,17 @@ PrefabInstance:
     - target: {fileID: 5910370144246330310, guid: 293941e3b127e4ee0897ada2bb57c6b2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.32
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 5910370144246330310, guid: 293941e3b127e4ee0897ada2bb57c6b2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.01243782
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5910370144246330310, guid: 293941e3b127e4ee0897ada2bb57c6b2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.03
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 5910370144246330310, guid: 293941e3b127e4ee0897ada2bb57c6b2,
         type: 3}
