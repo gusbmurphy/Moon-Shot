@@ -15,6 +15,7 @@ public class TurnManager : MonoBehaviour
     public bool awaitingUser = true;
     public AdjustmentController adjController;
     public Text completionText;
+    public Button nextLevelButton;
 
     private ObjectiveDefinition[] objectives;
 
@@ -44,6 +45,7 @@ public class TurnManager : MonoBehaviour
         UpdateObjectives();
 
         completionText.gameObject.SetActive(false);
+        nextLevelButton.gameObject.SetActive(false);
     }
 
     private void UpdateObjectives()
@@ -64,11 +66,16 @@ public class TurnManager : MonoBehaviour
         if (Array.TrueForAll<ObjectiveDefinition>(objectives,
             objective => objective.IsCompleted))
         {
-            StartCoroutine(CompleteLevel());
+            if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
+            {
+                nextLevelButton.gameObject.SetActive(true);
+                completionText.gameObject.SetActive(true);
+            }
+            else GameFinished();
         }
     }
 
-    private IEnumerator CompleteLevel()
+    private IEnumerator CompleteLevelWithDelay()
     {
         completionText.gameObject.SetActive(true);
         yield return new WaitForSeconds(3f);
@@ -76,6 +83,11 @@ public class TurnManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         else
             GameFinished();
+    }
+
+    public void GoToNextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private void GameFinished()
