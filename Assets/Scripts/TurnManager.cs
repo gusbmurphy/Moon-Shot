@@ -105,7 +105,7 @@ public class TurnManager : MonoBehaviour
         shouldCheckForMovement = false;
         awaitingUser = true;
         Turn++;
-        adjController.indicatorLocked = false;
+        //adjController.indicatorLocked = false;
     }
 
     private bool BodiesAreMoving()

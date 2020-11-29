@@ -34,6 +34,28 @@ public class AdjustmentController : MonoBehaviour
     private float pitchResetTimer = 0.0f;
     private float pitchResetBeginningRotation;
 
+    [Tooltip("The distance a user will have to move the mouse to reach full " +
+        "force.")]
+    public float forceMaxMouseTravel = 1000f;
+    private float _currentForceTravel = 0.0f;
+    private bool isTrackingForce = false;
+    private Vector3 initialCueModelPos;
+    public float cueMaxTravelDistance = 3f;
+
+    private float CurrentForceTravel
+    {
+        get { return _currentForceTravel; }
+        set
+        {
+            if (value < 0) _currentForceTravel = 0f;
+            else if (value > forceMaxMouseTravel) _currentForceTravel = forceMaxMouseTravel;
+            else _currentForceTravel = value;
+
+            cue.SetModelPositionBetweenMinMax
+                (_currentForceTravel / forceMaxMouseTravel);
+        }
+    }
+
     /* This bool represents whether or not the user has "locked" the indicator
      * to the target by clicking on it. */
     public bool indicatorLocked = false;
@@ -57,6 +79,7 @@ public class AdjustmentController : MonoBehaviour
         cue.transform.position = target.transform.position;
         cue.transform.rotation = target.transform.rotation;
 
+        cue.SetModelPositionBetweenMinMax(0);
         //InstantiateTrajectoryIndicators();
     }
 
@@ -72,7 +95,8 @@ public class AdjustmentController : MonoBehaviour
 
     private void Update()
     {
-        HandleMouseInput();
+        if (!isTrackingForce) HandleRotationInput();
+        HandleForceInput();
 
         //if (isResetingPitch)
         //{
@@ -98,7 +122,25 @@ public class AdjustmentController : MonoBehaviour
         //}
     }
 
-    private void HandleMouseInput()
+    private void HandleForceInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isTrackingForce = true;
+        }
+
+        if (isTrackingForce && Input.GetMouseButton(0))
+        {
+            CurrentForceTravel += Input.GetAxis("Mouse Y");
+        }
+
+        if (isTrackingForce && Input.GetMouseButtonUp(0))
+        {
+            Hit();
+        }
+    }
+
+    private void HandleRotationInput()
     {
         // If the user presses the RMB, we set the time it happened...
         if (Input.GetMouseButtonDown(1))
@@ -135,14 +177,6 @@ public class AdjustmentController : MonoBehaviour
                 cam.transform.LookAt(target.transform.position);
             }
         }
-
-        SetAimLine();
-
-        // If the user left clicks, hit the ball.
-        if (Input.GetMouseButtonDown(0))
-        {
-            Hit();
-        }
     }
 
     private void ResetPitch()
@@ -157,12 +191,19 @@ public class AdjustmentController : MonoBehaviour
         throw new NotImplementedException();
     }
 
+    private float GetForceMagnitude()
+    {
+        return baseForce * (CurrentForceTravel / forceMaxMouseTravel);
+    }
+
     private void Hit()
     {
-        Vector3 forceVector = cue.transform.forward * baseForce;
+        Vector3 forceVector = cue.transform.forward * GetForceMagnitude();
 
         target.GetComponent<Rigidbody>()
             .AddForce(forceVector);
+
+        cue.SetModelPositionBetweenMinMax(0);
 
         lineRenderer.gameObject.SetActive(false);
 
