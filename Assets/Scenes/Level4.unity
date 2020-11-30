@@ -188,7 +188,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 343931770551822193, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1 &703694644
 GameObject:
@@ -733,7 +735,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 343931770551822193, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1001 &1852071961
 PrefabInstance:
@@ -746,6 +750,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Purple Gas Planet
+      objectReference: {fileID: 0}
+    - target: {fileID: 427790750673306850, guid: 69c6269899b3674489e4e8ac0a40e822,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 427790750673306878, guid: 69c6269899b3674489e4e8ac0a40e822,
         type: 3}
@@ -802,7 +811,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1001 &1194610246071951000
 PrefabInstance:
@@ -812,6 +822,11 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 557177998, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66, type: 3}
+      propertyPath: goal
+      value: 
+      objectReference: {fileID: 1422937025}
+    - target: {fileID: 1464232481701154535, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66,
+        type: 3}
       propertyPath: goal
       value: 
       objectReference: {fileID: 1422937025}
@@ -904,6 +919,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 706799132}
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoToNextLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 535391517, guid: dd669fd704dcc4e8a9de6f436c90fab5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2884785201016448458, guid: dd669fd704dcc4e8a9de6f436c90fab5,
         type: 3}
       propertyPath: adjController
