@@ -411,6 +411,25 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 5647739801986024275}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1326037897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5647739802643033634, guid: d68c86ad4899f4d0bba6b368979674ec,
+    type: 3}
+  m_PrefabInstance: {fileID: 5647739801986024275}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1326037901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326037897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74c78b117f294f6b860b9c3b8d34529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1741052699}
 --- !u!1 &1422937025 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4219186777758502585, guid: 80c2dde5b5b22f94fac6330eb92e5720,
@@ -785,6 +804,11 @@ PrefabInstance:
       propertyPath: cameraLerpTime
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2884785201016448458, guid: dd669fd704dcc4e8a9de6f436c90fab5,
+        type: 3}
+      propertyPath: hitController
+      value: 
+      objectReference: {fileID: 188148542}
     - target: {fileID: 4976230350207290495, guid: dd669fd704dcc4e8a9de6f436c90fab5,
         type: 3}
       propertyPath: m_Name
