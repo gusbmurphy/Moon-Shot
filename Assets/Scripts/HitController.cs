@@ -6,7 +6,7 @@ using UnityEngine;
 /* This class is responsible for providing the various handles to make
  * adjustments on a target GameObject. */
 
-public class AdjustmentController : MonoBehaviour
+public class HitController : MonoBehaviour
 {
     public float xSensitivity = 1.0f;
     public float ySensitivity = 1.0f;
@@ -136,7 +136,12 @@ public class AdjustmentController : MonoBehaviour
 
         if (isTrackingForce && Input.GetMouseButtonUp(0))
         {
-            Hit();
+            if (GetForceMagnitude() > 0)
+            {
+                Hit();
+            }
+
+            isTrackingForce = false;
         }
     }
 

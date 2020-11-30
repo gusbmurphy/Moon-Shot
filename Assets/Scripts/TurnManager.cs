@@ -6,14 +6,23 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using System;
 
+
 public class TurnManager : MonoBehaviour
 {
+    public enum TurnStage
+    {
+        AwaitingHit,
+        AwaitingTurnCompletion
+    }
+
+    public TurnStage currentStage = TurnStage.AwaitingHit;
+
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public Text objectivesText;
     public bool shouldCheckForMovement = false;
     public bool awaitingUser = true;
-    public AdjustmentController adjController;
+    public HitController adjController;
     public Text completionText;
     public Button nextLevelButton;
     public Transform camSocket;
@@ -38,6 +47,8 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         Turn = 1;
         bodies = FindObjectsOfType<CelestialBody>();
 
@@ -75,6 +86,7 @@ public class TurnManager : MonoBehaviour
         {
             if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
             {
+                Cursor.lockState = CursorLockMode.None;
                 nextLevelButton.gameObject.SetActive(true);
                 completionText.gameObject.SetActive(true);
             }
@@ -108,8 +120,12 @@ public class TurnManager : MonoBehaviour
 
         if (!awaitingUser)
         {
-            if (!shouldLerpCam) MoveCameraToObserve();
-            else LerpCamTo(camSocket);
+            if (!shouldLerpCam) BeginMovingCamToHitPosition();
+        }
+
+        if (shouldLerpCam)
+        {
+            LerpCamTo(lerpTarget);
         }
     }
 
@@ -119,12 +135,11 @@ public class TurnManager : MonoBehaviour
     private bool shouldLerpCam = false;
     public float cameraLerpTime = 1f;
 
-    private void MoveCameraToObserve()
+    private Transform lerpTarget;
+
+    private void BeginMovingCamToHitPosition()
     {
-        shouldLerpCam = true;
-        camLerpT = 0.0f;
-        initialCamPosition = cam.transform.position;
-        initialCamRotation = cam.transform.rotation;
+
     }
 
     private void LerpCamTo(Transform target)
