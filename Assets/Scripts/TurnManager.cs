@@ -90,12 +90,11 @@ public class TurnManager : MonoBehaviour
 
         cam = Camera.main;
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
-
-        cue = hitController.GetCue();
     }
 
     private void FixedUpdate()
     {
+        if (cue == null) cue = hitController.GetCue();
         switch (CurrentStage)
         {
             case TurnStage.AwaitingTurnCompletion:
