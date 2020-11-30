@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/TitleMoon.unity
+    guid: 84d6270a85c51be4a94a524db002695f
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 846bec312e9c6aa47a2048874c662e05
   - enabled: 1
