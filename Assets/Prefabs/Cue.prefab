@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraSocket: {fileID: 1483975137}
-  cueModel: {fileID: 5791975757721093925}
+  cueModel: {fileID: 1479455170720483226}
   minCuePosition: {fileID: 3065871329324040425}
   maxCuePosition: {fileID: 7658510054001362617}
 --- !u!1 &5553668562855543354
@@ -256,12 +256,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 896dc098fd89ae940afe51cbec5d6269, type: 3}
---- !u!1 &5791975757721093925 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 896dc098fd89ae940afe51cbec5d6269,
-    type: 3}
-  m_PrefabInstance: {fileID: 2540265854099824172}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7366308559941088566 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 896dc098fd89ae940afe51cbec5d6269,

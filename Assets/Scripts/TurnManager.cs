@@ -43,7 +43,6 @@ public class TurnManager : MonoBehaviour
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public Text objectivesText;
-    public bool awaitingUser = true;
     public HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
@@ -89,7 +88,7 @@ public class TurnManager : MonoBehaviour
         cam = Camera.main;
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
 
-        cue = hitController.cue;
+        cue = hitController.GetCue();
     }
 
     private void FixedUpdate()

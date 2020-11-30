@@ -16,7 +16,9 @@ public class HitController : MonoBehaviour
 
     public TurnManager turnManager;
 
-    public Cue cue;
+    public Cue cueToInstantiate;
+    private Cue cue;
+    public Cue GetCue() => cue;
 
     public GameObject target;
 
@@ -72,6 +74,7 @@ public class HitController : MonoBehaviour
 
     private void Start()
     {
+        cue = Instantiate(cueToInstantiate);
         cam = Camera.main;
 
         SetCueToTurnStart();
