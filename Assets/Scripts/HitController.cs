@@ -74,13 +74,18 @@ public class HitController : MonoBehaviour
     {
         cam = Camera.main;
 
-        lineRenderer.gameObject.SetActive(false);
+        SetCueToTurnStart();
 
+        lineRenderer.gameObject.SetActive(false);
+        //InstantiateTrajectoryIndicators();
+    }
+
+    public void SetCueToTurnStart()
+    {
         cue.transform.position = target.transform.position;
         cue.transform.rotation = target.transform.rotation;
 
         cue.SetModelPositionBetweenMinMax(0);
-        //InstantiateTrajectoryIndicators();
     }
 
     private void InstantiateTrajectoryIndicators()
@@ -95,8 +100,11 @@ public class HitController : MonoBehaviour
 
     private void Update()
     {
-        if (!isTrackingForce) HandleRotationInput();
-        HandleForceInput();
+        if (turnManager.CurrentStage == TurnManager.TurnStage.AwaitingHit)
+        {
+            if (!isTrackingForce) HandleRotationInput();
+            HandleForceInput();
+        }
 
         //if (isResetingPitch)
         //{
@@ -142,6 +150,7 @@ public class HitController : MonoBehaviour
             }
 
             isTrackingForce = false;
+            CurrentForceTravel = 0f;
         }
     }
 
@@ -167,7 +176,6 @@ public class HitController : MonoBehaviour
             {
                 cue.transform.Rotate(yInput * ySensitivity, 0, 0);
                 cam.transform.position = cue.cameraSocket.position;
-                cam.transform.LookAt(target.transform.position);
             }
         }
         // Otherwise we rotate...
@@ -179,7 +187,6 @@ public class HitController : MonoBehaviour
                 //cue.transform.Rotate(Vector3.up, -xInput * xSensitivity);
                 cue.transform.RotateAround(target.transform.position, Vector3.up, -xInput * xSensitivity);
                 cam.transform.position = cue.cameraSocket.position;
-                cam.transform.LookAt(target.transform.position);
             }
         }
     }
@@ -217,12 +224,12 @@ public class HitController : MonoBehaviour
 
     private IEnumerator SetTurnManagerTimeout()
     {
-        /* Wait briefly before moving the camera out. */
-        yield return new WaitForSeconds(0.25f);
-        turnManager.awaitingUser = false;
         cue.gameObject.SetActive(false); // Hide the cue.
 
+        /* Wait a moment, then start to check if we can end the turn because
+         * no objects are moving. */
         yield return new WaitForSeconds(1f);
-        turnManager.shouldCheckForMovement = true;
+        turnManager._currentStage = TurnManager.TurnStage.AwaitingTurnCompletion;
+        //turnManager.shouldCheckForMovement = true;
     }
 }
