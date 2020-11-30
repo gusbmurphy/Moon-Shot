@@ -201,14 +201,14 @@ public class TurnManager : MonoBehaviour
         else GameFinished();
     }
 
-    private void OnDrawGizmos()
-    {
-        Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
-        Gizmos.color = Color.white;
+    //private void OnDrawGizmos()
+    //{
+    //    Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
+    //    Gizmos.color = Color.white;
 
-        foreach (Rigidbody rb in gizmoRbs)
-        {
-            Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
-        }
-    }
+    //    foreach (Rigidbody rb in gizmoRbs)
+    //    {
+    //        Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
+    //    }
+    //}
 }
