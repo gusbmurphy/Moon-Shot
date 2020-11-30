@@ -212,7 +212,11 @@ public class AdjustmentController : MonoBehaviour
 
     private IEnumerator SetTurnManagerTimeout()
     {
+        /* Wait briefly before moving the camera out. */
+        yield return new WaitForSeconds(0.25f);
         turnManager.awaitingUser = false;
+        cue.gameObject.SetActive(false); // Hide the cue.
+
         yield return new WaitForSeconds(1f);
         turnManager.shouldCheckForMovement = true;
     }

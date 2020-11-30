@@ -16,8 +16,12 @@ public class TurnManager : MonoBehaviour
     public AdjustmentController adjController;
     public Text completionText;
     public Button nextLevelButton;
+    public Transform camSocket;
 
     private ObjectiveDefinition[] objectives;
+    private Camera cam;
+
+    private GameObject cueBall;
 
     private int _turn;
     private int Turn
@@ -46,6 +50,9 @@ public class TurnManager : MonoBehaviour
 
         completionText.gameObject.SetActive(false);
         nextLevelButton.gameObject.SetActive(false);
+
+        cam = Camera.main;
+        cueBall = GameObject.FindGameObjectWithTag("CueBall");
     }
 
     private void UpdateObjectives()
@@ -98,6 +105,44 @@ public class TurnManager : MonoBehaviour
     private void FixedUpdate()
     {
         if (shouldCheckForMovement && !BodiesAreMoving()) EndTurn();
+
+        if (!awaitingUser)
+        {
+            if (!shouldLerpCam) MoveCameraToObserve();
+            else LerpCamTo(camSocket);
+        }
+    }
+
+    private float camLerpT;
+    private Vector3 initialCamPosition;
+    private Quaternion initialCamRotation;
+    private bool shouldLerpCam = false;
+    public float cameraLerpTime = 1f;
+
+    private void MoveCameraToObserve()
+    {
+        shouldLerpCam = true;
+        camLerpT = 0.0f;
+        initialCamPosition = cam.transform.position;
+        initialCamRotation = cam.transform.rotation;
+    }
+
+    private void LerpCamTo(Transform target)
+    {
+        camLerpT += Time.deltaTime;
+
+        float lerpCompletion = camLerpT > cameraLerpTime ? 1f :
+            camLerpT < 0f ? 0f :
+            camLerpT / cameraLerpTime;
+
+        cam.transform.position = Vector3.Lerp(initialCamPosition,
+            target.position, lerpCompletion);
+        cam.transform.LookAt(cueBall.transform.position);
+
+        if (lerpCompletion > 1f)
+        {
+            shouldLerpCam = false;
+        }
     }
 
     private void EndTurn()
