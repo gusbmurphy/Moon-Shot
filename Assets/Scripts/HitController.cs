@@ -23,7 +23,7 @@ public class HitController : MonoBehaviour
     public GameObject target;
 
     public float baseForce = 3000f;
-    public float aimLineLength = 5f;
+    public float aimLineMaxLength = 5f;
 
     public GameObject trajectoryIndicatorToPool;
     public int numOfTrajectoryIndicatorsToPool = 5;
@@ -66,10 +66,17 @@ public class HitController : MonoBehaviour
 
     private void SetAimLine()
     {
-        lineRenderer.SetPositions(new Vector3[] {
-            target.transform.position,
-            target.transform.position - (cue.transform.position - target.transform.position).normalized * aimLineLength
-            });
+        float lineLength = (CurrentForceTravel / forceMaxMouseTravel)
+            * aimLineMaxLength;
+
+        Vector3 lineStart = target.transform.position +
+            cue.transform.forward * 0.7f;
+
+        Vector3 lineEnd = lineStart + cue.transform.forward * lineLength;
+
+        lineRenderer.SetPositions(new Vector3[] { lineStart, lineEnd });
+
+        lineRenderer.gameObject.SetActive(true);
     }
 
     private void Start()
@@ -143,6 +150,8 @@ public class HitController : MonoBehaviour
         if (isTrackingForce && Input.GetMouseButton(0))
         {
             CurrentForceTravel += Input.GetAxis("Mouse Y");
+
+            if (GetForceMagnitude() > 0) SetAimLine();
         }
 
         if (isTrackingForce && Input.GetMouseButtonUp(0))
