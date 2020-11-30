@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -121,18 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &350522072 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 188148542, guid: d68c86ad4899f4d0bba6b368979674ec,
-    type: 3}
-  m_PrefabInstance: {fileID: 5647739801986024275}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b64e8ceb2b57444385b75dea9c73451, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,11 +1441,6 @@ PrefabInstance:
       propertyPath: adjController
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2884785201016448458, guid: dd669fd704dcc4e8a9de6f436c90fab5,
-        type: 3}
-      propertyPath: hitController
-      value: 
-      objectReference: {fileID: 350522072}
     - target: {fileID: 4976230350207290495, guid: dd669fd704dcc4e8a9de6f436c90fab5,
         type: 3}
       propertyPath: m_Name
@@ -1527,14 +1510,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 188148542, guid: d68c86ad4899f4d0bba6b368979674ec, type: 3}
-      propertyPath: turnManager
-      value: 
-      objectReference: {fileID: 706799132}
-    - target: {fileID: 188148542, guid: d68c86ad4899f4d0bba6b368979674ec, type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 1741052699}
     - target: {fileID: 5647739802498129673, guid: d68c86ad4899f4d0bba6b368979674ec,
         type: 3}
       propertyPath: m_Name
@@ -1611,11 +1586,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9027187349853330195, guid: d68c86ad4899f4d0bba6b368979674ec,
-        type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 1741052699}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d68c86ad4899f4d0bba6b368979674ec, type: 3}
 --- !u!1001 &6929877707545232031
