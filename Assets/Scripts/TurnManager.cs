@@ -43,7 +43,7 @@ public class TurnManager : MonoBehaviour
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public Text objectivesText;
-    public HitController hitController;
+    private HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
     public Transform camSocket;
@@ -70,6 +70,9 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        hitController = GameObject.FindGameObjectWithTag("PlayerController")
+            .GetComponent<HitController>();
+
         Cursor.lockState = CursorLockMode.Locked;
 
         Turn = 1;

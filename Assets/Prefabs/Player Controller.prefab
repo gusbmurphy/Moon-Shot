@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 188148542}
   m_Layer: 0
   m_Name: Player Controller
-  m_TagString: Untagged
+  m_TagString: PlayerController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
   cueToInstantiate: {fileID: 1464137889, guid: 293941e3b127e4ee0897ada2bb57c6b2, type: 3}
   target: {fileID: 0}
   baseForce: 3000
-  aimLineLength: 5
+  aimLineMaxLength: 5
   trajectoryIndicatorToPool: {fileID: 0}
   numOfTrajectoryIndicatorsToPool: 5
   lineRenderer: {fileID: 548014783}

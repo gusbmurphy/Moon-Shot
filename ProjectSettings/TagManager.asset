@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - StopZone
   - CueBall
+  - TurnManager
+  - PlayerController
   layers:
   - Default
   - TransparentFX

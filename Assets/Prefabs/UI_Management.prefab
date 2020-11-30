@@ -117,7 +117,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 535391518}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2884785201016448458}
+        m_MethodName: GoToNextLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &733038790
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +295,7 @@ GameObject:
   - component: {fileID: 2884785201016448458}
   m_Layer: 0
   m_Name: TurnManager
-  m_TagString: Untagged
+  m_TagString: TurnManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -315,14 +326,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7707759bd60f149acbcc5e7489f90873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentStage: 0
   movementThreshhold: 0.01
   turnText: {fileID: 2884785202101565392}
   objectivesText: {fileID: 2884785201515102231}
-  shouldCheckForMovement: 0
-  awaitingUser: 1
-  adjController: {fileID: 0}
   completionText: {fileID: 2884785200665746341}
   nextLevelButton: {fileID: 535391517}
+  camSocket: {fileID: 0}
+  cameraLerpTime: 1
 --- !u!1 &2884785201515102313
 GameObject:
   m_ObjectHideFlags: 0

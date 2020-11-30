@@ -14,7 +14,7 @@ public class HitController : MonoBehaviour
     public float clickTimeout = 0.2f;
     private float initialClickTime;
 
-    public TurnManager turnManager;
+    private TurnManager turnManager;
 
     public Cue cueToInstantiate;
     private Cue cue;
@@ -81,6 +81,9 @@ public class HitController : MonoBehaviour
 
     private void Start()
     {
+        turnManager = GameObject.FindGameObjectWithTag("TurnManager")
+            .GetComponent<TurnManager>();
+
         cue = Instantiate(cueToInstantiate);
         cam = Camera.main;
 
