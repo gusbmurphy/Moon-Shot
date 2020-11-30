@@ -154,9 +154,10 @@ public class HitController : MonoBehaviour
 
         if (isTrackingForce && Input.GetMouseButton(0))
         {
-            CurrentForceTravel += Input.GetAxis("Mouse Y");
+            CurrentForceTravel -= Input.GetAxis("Mouse Y");
 
             if (GetForceMagnitude() > 0) SetAimLine();
+            else lineRenderer.gameObject.SetActive(false);
         }
 
         if (isTrackingForce && Input.GetMouseButtonUp(0))
