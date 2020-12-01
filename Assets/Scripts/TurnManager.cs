@@ -41,11 +41,11 @@ public class TurnManager : MonoBehaviour
 
     public float movementThreshhold = 0.01f;
     public Text turnText;
-    public Text objectivesText;
+    //public Text objectivesText;
     private HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
-    public Transform camSocket;
+    //public Transform camSocket;
 
     private Cue cue;
 
@@ -149,18 +149,18 @@ public class TurnManager : MonoBehaviour
 
     private void UpdateObjectives()
     {
-        String description = "";
+        //String description = "";
 
-        for (int i = 0; i < objectives.Length; i++)
-        {
-            ObjectiveDefinition objective = objectives[i];
-            if (objective.IsCompleted) description += "X";
-            description += "Get " + objective.gameObject.name +
-                " to " + objective.goal.gameObject.name;
-            if (i + 1 != objectives.Length) description += Environment.NewLine;
-        }
+        //for (int i = 0; i < objectives.Length; i++)
+        //{
+        //    ObjectiveDefinition objective = objectives[i];
+        //    if (objective.IsCompleted) description += "X";
+        //    description += "Get " + objective.gameObject.name +
+        //        " to " + objective.goal.gameObject.name;
+        //    if (i + 1 != objectives.Length) description += Environment.NewLine;
+        //}
 
-        objectivesText.text = description;
+        //objectivesText.text = description;
 
         if (Array.TrueForAll<ObjectiveDefinition>(objectives,
             objective => objective.IsCompleted))
