@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -188,7 +188,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1001 &554716879
 PrefabInstance:
@@ -566,7 +567,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1001 &1126424914
 PrefabInstance:
@@ -796,7 +798,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1 &1422937025 stripped
 GameObject:
@@ -943,7 +946,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1194610246302135576, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69c6269899b3674489e4e8ac0a40e822, type: 3}
 --- !u!1001 &1194610246071951000
 PrefabInstance:
