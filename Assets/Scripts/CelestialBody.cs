@@ -115,8 +115,11 @@ public class CelestialBody : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, attractionDistance);
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
+        if (rb != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
+        }
     }
 
     public bool IsMoving()
