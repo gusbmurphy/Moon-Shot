@@ -51,28 +51,26 @@ public class UIManager : MonoBehaviour
             SetElementsColorTo(restartElement, defaultColor);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            SetElementsColorTo(lmbElement, activeColor);
-            SetElementsColorTo(rmbElement, deactivatedColor);
-        }
-
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            SetElementsColorTo(lmbElement, defaultColor);
-            SetElementsColorTo(rmbElement, defaultColor);
-        }
-
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            SetElementsColorTo(lmbElement, deactivatedColor);
             SetElementsColorTo(rmbElement, activeColor);
+            SetElementsColorTo(lmbElement, deactivatedColor);
         }
-
-        if (Input.GetKeyUp(KeyCode.Mouse1))
+        else if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            SetElementsColorTo(rmbElement, defaultColor);
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                SetElementsColorTo(lmbElement, activeColor);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            SetElementsColorTo(lmbElement, activeColor);
+        }
+        else if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             SetElementsColorTo(lmbElement, defaultColor);
-            SetElementsColorTo(rmbElement, defaultColor);
         }
     }
 }
