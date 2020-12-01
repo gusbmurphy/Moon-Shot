@@ -60,6 +60,9 @@ sysinfo.txt
 *.aab
 *.unitypackage
 
+# iCloud stuff
+*.icloud
+
 # Crashlytics generated file
 crashlytics-build.properties
 
