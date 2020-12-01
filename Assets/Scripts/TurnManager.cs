@@ -90,6 +90,10 @@ public class TurnManager : MonoBehaviour
 
         camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
+
+        // Find the ambient music, and make sure it's not destroyed on load of next scene.
+        GameObject ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
+        DontDestroyOnLoad(ambientMusic);
     }
 
     private void Update()
