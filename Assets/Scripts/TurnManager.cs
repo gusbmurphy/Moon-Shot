@@ -29,8 +29,7 @@ public class TurnManager : MonoBehaviour
                     hitController.SetCueToTurnStart();
                     shouldLerpCam = true;
                     lerpTarget = cue.cameraSocket;
-                    initialCamPosition = cam.transform.position;
-                    initialCamRotation = cam.transform.rotation;
+                    initialCamPosition = camArm.transform.position;
                     camLerpT = 0f;
                     break;
                 case TurnStage.AwaitingHit:
@@ -51,7 +50,7 @@ public class TurnManager : MonoBehaviour
     private Cue cue;
 
     private ObjectiveDefinition[] objectives;
-    private Camera cam;
+    private GameObject camArm;
 
     private GameObject cueBall;
 
@@ -88,7 +87,7 @@ public class TurnManager : MonoBehaviour
         completionText.gameObject.SetActive(false);
         nextLevelButton.gameObject.SetActive(false);
 
-        cam = Camera.main;
+        camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
     }
 
@@ -127,7 +126,7 @@ public class TurnManager : MonoBehaviour
             camLerpT < 0f ? 0f :
             camLerpT / cameraLerpTime;
 
-        cam.transform.position = Vector3.Lerp(initialCamPosition,
+        camArm.transform.position = Vector3.Lerp(initialCamPosition,
             target.position, lerpCompletion);
 
         if (lerpCompletion >= 1f)
