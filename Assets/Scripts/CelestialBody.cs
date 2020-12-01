@@ -15,6 +15,7 @@ public class CelestialBody : MonoBehaviour
     private List<CelestialBody> touchingBodies = new List<CelestialBody>();
     private Vector3 positionLastFrame;
 
+    
     private AudioSource clackSource;
 
     void Start()
