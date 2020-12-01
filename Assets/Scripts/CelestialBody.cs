@@ -17,12 +17,14 @@ public class CelestialBody : MonoBehaviour
 
     
     private AudioSource clackSource;
+    public AudioClip[] clacks;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         positionLastFrame = transform.position;
         clackSource = GetComponent<AudioSource>();
+        clacks = Resources.LoadAll<AudioClip>("Audio/Clacks");
     }
 
     private void FixedUpdate()
@@ -82,7 +84,8 @@ public class CelestialBody : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        clackSource.PlayOneShot(clackSource.clip,1);
+        //clackSource.PlayOneShot(clackSource.clip,1);
+        clackSource.PlayOneShot(clacks[Random.Range(0,clacks.Length)], Random.Range(0.5f,1.0f));
 
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
