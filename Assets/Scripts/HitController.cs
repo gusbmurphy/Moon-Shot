@@ -44,6 +44,8 @@ public class HitController : MonoBehaviour
     private Vector3 initialCueModelPos;
     public float cueMaxTravelDistance = 3f;
 
+    private AudioSource audioSource;
+
     private float CurrentForceTravel
     {
         get { return _currentForceTravel; }
@@ -95,6 +97,9 @@ public class HitController : MonoBehaviour
 
         lineRenderer.gameObject.SetActive(false);
         //InstantiateTrajectoryIndicators();
+
+        audioSource = GameObject.FindGameObjectWithTag("TurnManager")
+            .GetComponent<AudioSource>();
     }
 
     public void SetCueToTurnStart()
@@ -240,6 +245,8 @@ public class HitController : MonoBehaviour
         lineRenderer.gameObject.SetActive(false);
 
         StartCoroutine(SetTurnManagerTimeout());
+
+        audioSource.PlayOneShot(audioSource.clip, 1);
     }
 
     private IEnumerator SetTurnManagerTimeout()
