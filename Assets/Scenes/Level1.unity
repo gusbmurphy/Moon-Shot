@@ -984,6 +984,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2884785201016448458, guid: dd669fd704dcc4e8a9de6f436c90fab5,
+        type: 3}
+      propertyPath: levelResetAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 1466d06bf481c4a188919f5b711daaf1, type: 3}
     - target: {fileID: 4976230350207290495, guid: dd669fd704dcc4e8a9de6f436c90fab5,
         type: 3}
       propertyPath: m_Name

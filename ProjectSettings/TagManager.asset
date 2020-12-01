@@ -10,6 +10,8 @@ TagManager:
   - CameraArm
   - AmbientMusic
   - LevelTransitionAudio
+  - Cue
+  - LevelResetAudio
   layers:
   - Default
   - TransparentFX

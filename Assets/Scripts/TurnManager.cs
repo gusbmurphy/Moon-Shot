@@ -73,6 +73,9 @@ public class TurnManager : MonoBehaviour
 
     private GameObject levelTransitionAudio;
 
+    public AudioClip levelResetAudioClip;
+    private GameObject levelResetAudio;
+
     private void Start()
     {
         hitController = GameObject.FindGameObjectWithTag("PlayerController")
@@ -95,13 +98,29 @@ public class TurnManager : MonoBehaviour
 
         camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
+        levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
 
         // Find the music objects, and make sure it's not destroyed on load of next scene.
         GameObject ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
         DontDestroyOnLoad(ambientMusic);
 
+        levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
+        if (levelResetAudio == null) CreateLevelResetAudioObject();
+        DontDestroyOnLoad(levelResetAudio);
+
         levelTransitionAudio = GameObject.FindGameObjectWithTag("LevelTransitionAudio");
-        DontDestroyOnLoad(levelTransitionAudio);
+
+        DontDestroyOnLoad(levelTransitionAudio); 
+    }
+
+    private void CreateLevelResetAudioObject()
+    {
+        levelResetAudio = new GameObject("LevelResetAudio");
+        levelResetAudio.tag = "LevelResetAudio";
+        AudioSource audioSource = levelResetAudio.AddComponent<AudioSource>();
+        audioSource.clip = levelResetAudioClip;
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
     }
 
     private void Update()
@@ -196,22 +215,25 @@ public class TurnManager : MonoBehaviour
         Turn++;
     }
 
-    public void RestartLevel() =>
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    public void RestartLevel()
+    {
+        levelResetAudio.GetComponent<AudioSource>().Play();
+        StartCoroutine(StartLevelTransition(0));
+    }
 
     public void GoToNextLevel()
     {
         levelTransitionAudio.GetComponent<AudioSource>().Play();
-        StartCoroutine(StartNextLevelTransition());
+        StartCoroutine(StartLevelTransition(1));
     }
 
-    IEnumerator StartNextLevelTransition()
+    IEnumerator StartLevelTransition(int i)
     {
         transition.SetTrigger("Start");
 
         yield return new WaitForSeconds(1f);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + i);
     }
 
     private void GameFinished() => throw new NotImplementedException();
