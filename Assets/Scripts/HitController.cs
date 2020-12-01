@@ -14,13 +14,13 @@ public class HitController : MonoBehaviour
     public float clickTimeout = 0.2f;
     private float initialClickTime;
 
-    public TurnManager turnManager;
+    private TurnManager turnManager;
 
     public Cue cueToInstantiate;
     private Cue cue;
     public Cue GetCue() => cue;
 
-    public GameObject target;
+    private GameObject cueBall;
 
     public float baseForce = 3000f;
     public float aimLineMaxLength = 5f;
@@ -69,7 +69,7 @@ public class HitController : MonoBehaviour
         float lineLength = (CurrentForceTravel / forceMaxMouseTravel)
             * aimLineMaxLength;
 
-        Vector3 lineStart = target.transform.position +
+        Vector3 lineStart = cueBall.transform.position +
             cue.transform.forward * 0.7f;
 
         Vector3 lineEnd = lineStart + cue.transform.forward * lineLength;
@@ -81,6 +81,11 @@ public class HitController : MonoBehaviour
 
     private void Start()
     {
+        cueBall = GameObject.FindGameObjectWithTag("CueBall");
+
+        turnManager = GameObject.FindGameObjectWithTag("TurnManager")
+            .GetComponent<TurnManager>();
+
         cue = Instantiate(cueToInstantiate);
         cam = Camera.main;
 
@@ -92,8 +97,8 @@ public class HitController : MonoBehaviour
 
     public void SetCueToTurnStart()
     {
-        cue.transform.position = target.transform.position;
-        cue.transform.rotation = target.transform.rotation;
+        cue.transform.position = cueBall.transform.position;
+        cue.transform.rotation = cueBall.transform.rotation;
 
         cue.SetModelPositionBetweenMinMax(0);
     }
@@ -149,9 +154,10 @@ public class HitController : MonoBehaviour
 
         if (isTrackingForce && Input.GetMouseButton(0))
         {
-            CurrentForceTravel += Input.GetAxis("Mouse Y");
+            CurrentForceTravel -= Input.GetAxis("Mouse Y");
 
             if (GetForceMagnitude() > 0) SetAimLine();
+            else lineRenderer.gameObject.SetActive(false);
         }
 
         if (isTrackingForce && Input.GetMouseButtonUp(0))
@@ -197,7 +203,7 @@ public class HitController : MonoBehaviour
             if (xInput > 0 || xInput < 0)
             {
                 //cue.transform.Rotate(Vector3.up, -xInput * xSensitivity);
-                cue.transform.RotateAround(target.transform.position, Vector3.up, -xInput * xSensitivity);
+                cue.transform.RotateAround(cueBall.transform.position, Vector3.up, -xInput * xSensitivity);
                 cam.transform.position = cue.cameraSocket.position;
             }
         }
@@ -224,7 +230,7 @@ public class HitController : MonoBehaviour
     {
         Vector3 forceVector = cue.transform.forward * GetForceMagnitude();
 
-        target.GetComponent<Rigidbody>()
+        cueBall.GetComponent<Rigidbody>()
             .AddForce(forceVector);
 
         cue.SetModelPositionBetweenMinMax(0);

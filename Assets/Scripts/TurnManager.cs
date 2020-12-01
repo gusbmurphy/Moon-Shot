@@ -43,7 +43,7 @@ public class TurnManager : MonoBehaviour
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public Text objectivesText;
-    public HitController hitController;
+    private HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
     public Transform camSocket;
@@ -70,6 +70,9 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        hitController = GameObject.FindGameObjectWithTag("PlayerController")
+            .GetComponent<HitController>();
+
         Cursor.lockState = CursorLockMode.Locked;
 
         Turn = 1;
@@ -87,12 +90,11 @@ public class TurnManager : MonoBehaviour
 
         cam = Camera.main;
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
-
-        cue = hitController.GetCue();
     }
 
     private void FixedUpdate()
     {
+        if (cue == null) cue = hitController.GetCue();
         switch (CurrentStage)
         {
             case TurnStage.AwaitingTurnCompletion:
@@ -198,14 +200,14 @@ public class TurnManager : MonoBehaviour
         else GameFinished();
     }
 
-    private void OnDrawGizmos()
-    {
-        Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
-        Gizmos.color = Color.white;
+    //private void OnDrawGizmos()
+    //{
+    //    Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
+    //    Gizmos.color = Color.white;
 
-        foreach (Rigidbody rb in gizmoRbs)
-        {
-            Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
-        }
-    }
+    //    foreach (Rigidbody rb in gizmoRbs)
+    //    {
+    //        Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
+    //    }
+    //}
 }

@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject target;
+    private GameObject cueBall;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        cueBall = GameObject.FindGameObjectWithTag("CueBall");
+    }
+
     void LateUpdate()
     {
-        transform.LookAt(target.transform.position);
+        transform.LookAt(cueBall.transform.position);
     }
 }
