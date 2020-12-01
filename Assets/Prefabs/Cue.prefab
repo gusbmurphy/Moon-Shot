@@ -254,6 +254,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CueModel
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 896dc098fd89ae940afe51cbec5d6269,
+        type: 3}
+      propertyPath: m_TagString
+      value: Cue
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 896dc098fd89ae940afe51cbec5d6269, type: 3}
 --- !u!4 &7366308559941088566 stripped

@@ -45,6 +45,7 @@ public class HitController : MonoBehaviour
     public float cueMaxTravelDistance = 3f;
 
     private AudioSource audioSource;
+    private AudioClip cueStrike;
 
     private float CurrentForceTravel
     {
@@ -98,8 +99,9 @@ public class HitController : MonoBehaviour
         lineRenderer.gameObject.SetActive(false);
         //InstantiateTrajectoryIndicators();
 
-        audioSource = GameObject.FindGameObjectWithTag("TurnManager")
+        audioSource = GameObject.FindGameObjectWithTag("CueBall")
             .GetComponent<AudioSource>();
+        cueStrike = Resources.Load<AudioClip>("Audio/cueStrike");
     }
 
     public void SetCueToTurnStart()
@@ -235,6 +237,8 @@ public class HitController : MonoBehaviour
 
     private void Hit()
     {
+        audioSource.PlayOneShot(cueStrike, 1);
+
         Vector3 forceVector = cue.transform.forward * GetForceMagnitude();
 
         cueBall.GetComponent<Rigidbody>()
@@ -246,7 +250,6 @@ public class HitController : MonoBehaviour
 
         StartCoroutine(SetTurnManagerTimeout());
 
-        audioSource.PlayOneShot(audioSource.clip, 1);
     }
 
     private IEnumerator SetTurnManagerTimeout()
