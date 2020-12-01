@@ -15,10 +15,13 @@ public class CelestialBody : MonoBehaviour
     private List<CelestialBody> touchingBodies = new List<CelestialBody>();
     private Vector3 positionLastFrame;
 
+    private AudioSource clackSource;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         positionLastFrame = transform.position;
+        clackSource = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -78,6 +81,8 @@ public class CelestialBody : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        clackSource.PlayOneShot(clackSource.clip,1);
+
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
         {
