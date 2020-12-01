@@ -183,7 +183,7 @@ public class HitController : MonoBehaviour
             Time.time - initialClickTime < clickTimeout &&
             (cue.transform.rotation.x > 0 || cue.transform.rotation.x < 0))
         {
-            ResetPitch();
+            //ResetPitch();
         }
 
         // If the user is holding the right click, we adjust pitch...
