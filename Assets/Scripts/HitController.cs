@@ -118,7 +118,7 @@ public class HitController : MonoBehaviour
     {
         if (turnManager.CurrentStage == TurnManager.TurnStage.AwaitingHit)
         {
-            if (!isTrackingForce) HandleRotationInput();
+            HandleRotationInput();
             HandleForceInput();
         }
 
@@ -146,9 +146,11 @@ public class HitController : MonoBehaviour
         //}
     }
 
+    private bool isAdjustingPitch = false;
+
     private void HandleForceInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isAdjustingPitch)
         {
             isTrackingForce = true;
         }
@@ -190,6 +192,7 @@ public class HitController : MonoBehaviour
         // If the user is holding the right click, we adjust pitch...
         if (Input.GetMouseButton(1) && !isResetingPitch)
         {
+            isAdjustingPitch = true;
             float yInput = Input.GetAxis("Mouse Y");
             if (yInput > 0 || yInput < 0)
             {
@@ -208,6 +211,12 @@ public class HitController : MonoBehaviour
                 cue.transform.RotateAround(cueBall.transform.position, Vector3.up, -xInput * xSensitivity);
                 cam.transform.position = cue.cameraSocket.position;
             }
+        }
+
+        // If the user has released RMB we need to stop adjusting pitch
+        if (Input.GetMouseButtonUp(1) && isAdjustingPitch)
+        {
+            isAdjustingPitch = false;
         }
     }
 
