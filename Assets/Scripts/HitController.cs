@@ -87,9 +87,11 @@ public class HitController : MonoBehaviour
             .GetComponent<TurnManager>();
 
         cue = Instantiate(cueToInstantiate);
+
         cam = Camera.main;
 
         SetCueToTurnStart();
+        cam.transform.position = cue.cameraSocket.position;
 
         lineRenderer.gameObject.SetActive(false);
         //InstantiateTrajectoryIndicators();
@@ -183,7 +185,7 @@ public class HitController : MonoBehaviour
             Time.time - initialClickTime < clickTimeout &&
             (cue.transform.rotation.x > 0 || cue.transform.rotation.x < 0))
         {
-            ResetPitch();
+            //ResetPitch();
         }
 
         // If the user is holding the right click, we adjust pitch...
