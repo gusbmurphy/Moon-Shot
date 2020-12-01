@@ -9,6 +9,7 @@ TagManager:
   - PlayerController
   - CameraArm
   - AmbientMusic
+  - LevelTransitionAudio
   layers:
   - Default
   - TransparentFX

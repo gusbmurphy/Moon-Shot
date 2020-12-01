@@ -71,6 +71,8 @@ public class TurnManager : MonoBehaviour
 
     private CelestialBody[] bodies;
 
+    private GameObject levelTransitionAudio;
+
     private void Start()
     {
         hitController = GameObject.FindGameObjectWithTag("PlayerController")
@@ -94,9 +96,12 @@ public class TurnManager : MonoBehaviour
         camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
 
-        // Find the ambient music, and make sure it's not destroyed on load of next scene.
+        // Find the music objects, and make sure it's not destroyed on load of next scene.
         GameObject ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
         DontDestroyOnLoad(ambientMusic);
+
+        levelTransitionAudio = GameObject.FindGameObjectWithTag("LevelTransitionAudio");
+        DontDestroyOnLoad(levelTransitionAudio);
     }
 
     private void Update()
@@ -196,6 +201,7 @@ public class TurnManager : MonoBehaviour
 
     public void GoToNextLevel()
     {
+        levelTransitionAudio.GetComponent<AudioSource>().Play();
         StartCoroutine(StartNextLevelTransition());
     }
 
