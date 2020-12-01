@@ -786,6 +786,8 @@ MonoBehaviour:
   turnText: {fileID: 2884785202101565392}
   completionText: {fileID: 2884785200665746341}
   nextLevelButton: {fileID: 535391517}
+  transition: {fileID: 6078736577956118511}
+  transitionTime: 1
   cameraLerpTime: 1
 --- !u!1 &2884785201785640392
 GameObject:

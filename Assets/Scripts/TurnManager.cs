@@ -48,6 +48,9 @@ public class TurnManager : MonoBehaviour
     public Button nextLevelButton;
     //public Transform camSocket;
 
+    public Animator transition;
+    public float transitionTime = 1f;
+
     private Cue cue;
 
     private ObjectiveDefinition[] objectives;
@@ -191,8 +194,19 @@ public class TurnManager : MonoBehaviour
     public void RestartLevel() =>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
-    public void GoToNextLevel() =>
+    public void GoToNextLevel()
+    {
+        StartCoroutine(StartNextLevelTransition());
+    }
+
+    IEnumerator StartNextLevelTransition()
+    {
+        transition.SetTrigger("Start");
+
+        yield return new WaitForSeconds(1f);
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 
     private void GameFinished() => throw new NotImplementedException();
 
