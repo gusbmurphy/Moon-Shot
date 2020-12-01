@@ -6,17 +6,54 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using System;
 
+
 public class TurnManager : MonoBehaviour
 {
+    public enum TurnStage
+    {
+        AwaitingHit,
+        AwaitingTurnCompletion,
+        SettingUpNextTurn
+    }
+
+    public TurnStage _currentStage = TurnStage.AwaitingHit;
+    public TurnStage CurrentStage
+    {
+        get { return _currentStage; }
+        set
+        {
+            _currentStage = value;
+            switch (value)
+            {
+                case TurnStage.SettingUpNextTurn:
+                    hitController.SetCueToTurnStart();
+                    shouldLerpCam = true;
+                    lerpTarget = cue.cameraSocket;
+                    initialCamPosition = cam.transform.position;
+                    initialCamRotation = cam.transform.rotation;
+                    camLerpT = 0f;
+                    break;
+                case TurnStage.AwaitingHit:
+                    cue.gameObject.SetActive(true);
+                    break;
+            }
+        }
+    }
+
     public float movementThreshhold = 0.01f;
     public Text turnText;
     public Text objectivesText;
-    public bool shouldCheckForMovement = false;
-    public bool awaitingUser = true;
-    public AdjustmentController adjController;
+    private HitController hitController;
     public Text completionText;
+    public Button nextLevelButton;
+    public Transform camSocket;
+
+    private Cue cue;
 
     private ObjectiveDefinition[] objectives;
+    private Camera cam;
+
+    private GameObject cueBall;
 
     private int _turn;
     private int Turn
@@ -33,6 +70,11 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        hitController = GameObject.FindGameObjectWithTag("PlayerController")
+            .GetComponent<HitController>();
+
+        Cursor.lockState = CursorLockMode.Locked;
+
         Turn = 1;
         bodies = FindObjectsOfType<CelestialBody>();
 
@@ -44,6 +86,61 @@ public class TurnManager : MonoBehaviour
         UpdateObjectives();
 
         completionText.gameObject.SetActive(false);
+        nextLevelButton.gameObject.SetActive(false);
+
+        cam = Camera.main;
+        cueBall = GameObject.FindGameObjectWithTag("CueBall");
+    }
+
+    private void FixedUpdate()
+    {
+        if (cue == null) cue = hitController.GetCue();
+        switch (CurrentStage)
+        {
+            case TurnStage.AwaitingTurnCompletion:
+                if (!BodiesAreMoving()) EndTurn();
+                break;
+            case TurnStage.SettingUpNextTurn:
+                LerpCamTo(lerpTarget);
+                break;
+        }
+    }
+
+    private float camLerpT;
+    private Vector3 initialCamPosition;
+    private Quaternion initialCamRotation;
+    private bool shouldLerpCam = false;
+    public float cameraLerpTime = 1f;
+
+    private Transform lerpTarget;
+
+    private void LerpCamTo(Transform target)
+    {
+        camLerpT += Time.deltaTime;
+
+        float lerpCompletion = camLerpT > cameraLerpTime ? 1f :
+            camLerpT < 0f ? 0f :
+            camLerpT / cameraLerpTime;
+
+        cam.transform.position = Vector3.Lerp(initialCamPosition,
+            target.position, lerpCompletion);
+
+        if (lerpCompletion >= 1f)
+        {
+            shouldLerpCam = false;
+            CurrentStage = TurnStage.AwaitingHit;
+        }
+    }
+
+    private bool BodiesAreMoving()
+    {
+        bool atLeastOneIsMoving = Array.Exists<CelestialBody>(bodies, body =>
+        {
+            Rigidbody rb = body.GetComponent<Rigidbody>();
+            return rb.velocity.magnitude > movementThreshhold ||
+                rb.angularVelocity.magnitude > movementThreshhold;
+        });
+        return atLeastOneIsMoving;
     }
 
     private void UpdateObjectives()
@@ -64,62 +161,53 @@ public class TurnManager : MonoBehaviour
         if (Array.TrueForAll<ObjectiveDefinition>(objectives,
             objective => objective.IsCompleted))
         {
-            StartCoroutine(CompleteLevel());
+            if (SceneManager.GetActiveScene().buildIndex + 1 <
+                SceneManager.sceneCountInBuildSettings)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                nextLevelButton.gameObject.SetActive(true);
+                completionText.gameObject.SetActive(true);
+            }
+            else GameFinished();
         }
-    }
-
-    private IEnumerator CompleteLevel()
-    {
-        completionText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(3f);
-        if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        else
-            GameFinished();
-    }
-
-    private void GameFinished()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void FixedUpdate()
-    {
-        if (shouldCheckForMovement && !BodiesAreMoving()) EndTurn();
     }
 
     private void EndTurn()
     {
-        shouldCheckForMovement = false;
-        awaitingUser = true;
+        CurrentStage = TurnStage.SettingUpNextTurn;
         Turn++;
-        adjController.indicatorLocked = false;
     }
 
-    private bool BodiesAreMoving()
-    {
-        bool atLeastOneIsMoving = Array.Exists<CelestialBody>(bodies, body =>
-        {
-            Rigidbody rb = body.GetComponent<Rigidbody>();
-            return rb.velocity.magnitude > movementThreshhold ||
-                rb.angularVelocity.magnitude > movementThreshhold;
-        });
-        return atLeastOneIsMoving;
-    }
-
-    public void RestartLevel()
-    {
+    public void RestartLevel() =>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
 
-    private void OnDrawGizmos()
+    public void GoToNextLevel() =>
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+    private void GameFinished() => throw new NotImplementedException();
+
+    private IEnumerator CompleteLevelWithDelay()
     {
-        Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
-        Gizmos.color = Color.white;
+        completionText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3f);
 
-        foreach (Rigidbody rb in gizmoRbs)
+        if (SceneManager.GetActiveScene().buildIndex + 1 <
+            SceneManager.sceneCountInBuildSettings)
         {
-            Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
+            SceneManager.LoadScene
+                (SceneManager.GetActiveScene().buildIndex + 1);
         }
+        else GameFinished();
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    Rigidbody[] gizmoRbs = FindObjectsOfType<Rigidbody>();
+    //    Gizmos.color = Color.white;
+
+    //    foreach (Rigidbody rb in gizmoRbs)
+    //    {
+    //        Handles.Label(rb.transform.position, "velocity magnitude: " + rb.velocity.magnitude + " " + (rb.IsSleeping() ? "asleep" : "awake"));
+    //    }
+    //}
 }

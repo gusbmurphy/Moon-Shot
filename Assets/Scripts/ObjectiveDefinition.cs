@@ -8,16 +8,52 @@ public class ObjectiveDefinition : MonoBehaviour
     public GameObject goal;
 
     private bool _isCompleted = false;
-    public bool IsCompleted => _isCompleted;
+    public bool IsCompleted
+    {
+        get { return _isCompleted; }
+        set
+        {
+            _isCompleted = value;
+            if (_isCompleted)
+            {
+                DisappearIntoGoal();
+                completed.Invoke();
+            }
+        }
+    }
 
     public UnityEvent completed;
 
-    private void OnCollisionEnter(Collision collision)
+    private bool shouldLerpToGoal = false;
+    private Vector3 lerpStartPos;
+    private float t = 0.0f;
+    private float lerpTime = 1.5f;
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.gameObject == goal)
+        if (other.gameObject == goal) IsCompleted = true;
+    }
+
+    private void DisappearIntoGoal()
+    {
+        // Stop all current velocity
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        rb.velocity = new Vector3();
+
+        shouldLerpToGoal = true;
+        lerpStartPos = transform.position;
+    }
+
+    private void FixedUpdate()
+    {
+        if (shouldLerpToGoal)
         {
-            _isCompleted = true;
-            completed.Invoke();
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(
+                lerpStartPos,
+                goal.transform.position,
+                t / lerpTime);
+            if (t / lerpTime >= 1f) gameObject.SetActive(false);
         }
     }
 }
