@@ -14,7 +14,8 @@ public class TurnManager : MonoBehaviour
         AwaitingHit,
         AwaitingTurnCompletion,
         SettingUpNextTurn,
-        LevelComplete
+        LevelComplete,
+        GameComplete
     }
 
     public TurnStage _currentStage = TurnStage.AwaitingHit;
@@ -46,6 +47,7 @@ public class TurnManager : MonoBehaviour
     private HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
+    public Text gameCompletionText;
     //public Transform camSocket;
 
     public Animator transition;
@@ -76,6 +78,10 @@ public class TurnManager : MonoBehaviour
     public AudioClip levelResetAudioClip;
     private GameObject levelResetAudio;
 
+    GameObject ambientMusic;
+
+    public AudioClip gameCompletionAudioClip;
+
     private void Start()
     {
         hitController = GameObject.FindGameObjectWithTag("PlayerController")
@@ -95,13 +101,14 @@ public class TurnManager : MonoBehaviour
 
         completionText.gameObject.SetActive(false);
         nextLevelButton.gameObject.SetActive(false);
+        gameCompletionText.gameObject.SetActive(false);
 
         camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
         levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
 
         // Find the music objects, and make sure it's not destroyed on load of next scene.
-        GameObject ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
+        ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
         DontDestroyOnLoad(ambientMusic);
 
         levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
@@ -236,7 +243,21 @@ public class TurnManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + i);
     }
 
-    private void GameFinished() => throw new NotImplementedException();
+    private void GameFinished()
+    {
+        CurrentStage = TurnStage.GameComplete;
+        //transition.SetTrigger("Start");
+        gameCompletionText.gameObject.SetActive(true);
+
+        GameObject gameCompletionAudio = new GameObject("GameCompletionAudio");
+        AudioSource audioSource = gameCompletionAudio.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.clip = gameCompletionAudioClip;
+        audioSource.Play();
+
+        if (ambientMusic != null) GameObject.Destroy(ambientMusic);
+    }
 
     private IEnumerator CompleteLevelWithDelay()
     {
