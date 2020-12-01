@@ -7,6 +7,7 @@ TagManager:
   - CueBall
   - TurnManager
   - PlayerController
+  - Cue
   layers:
   - Default
   - TransparentFX
