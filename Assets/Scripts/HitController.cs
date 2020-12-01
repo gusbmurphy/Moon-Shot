@@ -87,9 +87,11 @@ public class HitController : MonoBehaviour
             .GetComponent<TurnManager>();
 
         cue = Instantiate(cueToInstantiate);
+
         cam = Camera.main;
 
         SetCueToTurnStart();
+        cam.transform.position = cue.cameraSocket.position;
 
         lineRenderer.gameObject.SetActive(false);
         //InstantiateTrajectoryIndicators();
