@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
 
     private float pitch;
     private float yaw;
+    private float camYaw;
 
     private void Start()
     {
@@ -29,11 +30,12 @@ public class CameraController : MonoBehaviour
         switch (turnManager.CurrentStage)
         {
             case TurnManager.TurnStage.AwaitingTurnCompletion:
-                //HandleUserLook();
+                HandleUserLook();
                 break;
             default:
                 cam.transform.LookAt(cueBall.transform.position);
                 yaw = transform.eulerAngles.y;
+                camYaw = cam.transform.eulerAngles.y;
                 pitch = cam.transform.eulerAngles.x;
                 break;
         }
@@ -46,6 +48,6 @@ public class CameraController : MonoBehaviour
         pitch -= vSensitivity * Input.GetAxis("Mouse Y");
 
         transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
-        cam.transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+        cam.transform.eulerAngles = new Vector3(pitch, camYaw, 0.0f);
     }
 }
