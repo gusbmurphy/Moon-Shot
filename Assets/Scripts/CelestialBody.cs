@@ -15,10 +15,18 @@ public class CelestialBody : MonoBehaviour
     private List<CelestialBody> touchingBodies = new List<CelestialBody>();
     private Vector3 positionLastFrame;
 
+    
+    private AudioSource clackSource;
+    public AudioClip[] clacks;
+    public AudioClip cueStrike;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         positionLastFrame = transform.position;
+        clackSource = GetComponent<AudioSource>();
+        clacks = Resources.LoadAll<AudioClip>("Audio/Clacks");
+        cueStrike = Resources.Load<AudioClip>("Audio/cueStrike");
     }
 
     private void FixedUpdate()
@@ -78,6 +86,14 @@ public class CelestialBody : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        float speed = rb.velocity.magnitude;
+        if(speed > 15.0f) {
+            speed = 15.0f;
+        }
+
+        clackSource.PlayOneShot(clacks[Random.Range(0,clacks.Length)], (speed/15.0f));
+        Debug.Log("Velocity = " + rb.velocity.magnitude.ToString());
+
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
         {
