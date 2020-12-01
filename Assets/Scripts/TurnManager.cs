@@ -92,6 +92,11 @@ public class TurnManager : MonoBehaviour
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.R)) RestartLevel();
+    }
+
     private void FixedUpdate()
     {
         if (cue == null) cue = hitController.GetCue();
