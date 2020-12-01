@@ -107,6 +107,10 @@ public class HitController : MonoBehaviour
     public void SetCueToTurnStart()
     {
         cue.transform.position = cueBall.transform.position;
+        Vector3 cueRotation = cueBall.transform.rotation.eulerAngles;
+        cueRotation.x = 0.0f;
+        cueRotation.z = 0.0f;
+        cue.transform.eulerAngles = cueRotation;
 
         cue.SetModelPositionBetweenMinMax(0);
     }
