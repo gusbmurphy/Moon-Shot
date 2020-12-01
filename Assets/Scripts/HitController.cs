@@ -100,7 +100,6 @@ public class HitController : MonoBehaviour
     public void SetCueToTurnStart()
     {
         cue.transform.position = cueBall.transform.position;
-        cue.transform.rotation = cueBall.transform.rotation;
 
         cue.SetModelPositionBetweenMinMax(0);
     }
@@ -194,7 +193,8 @@ public class HitController : MonoBehaviour
             float yInput = Input.GetAxis("Mouse Y");
             if (yInput > 0 || yInput < 0)
             {
-                cue.transform.Rotate(yInput * ySensitivity, 0, 0);
+                float yRotation = yInput * ySensitivity;
+                cue.transform.Rotate(yRotation, 0, 0);
                 cam.transform.position = cue.cameraSocket.position;
             }
         }
