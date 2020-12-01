@@ -203,6 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attractionDistance: 3
+  clacks: []
+  cueStrike: {fileID: 0}
 --- !u!1 &4219186778062396420
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public class CelestialBody : MonoBehaviour
     
     private AudioSource clackSource;
     public AudioClip[] clacks;
+    public AudioClip cueStrike;
 
     void Start()
     {
@@ -25,6 +26,7 @@ public class CelestialBody : MonoBehaviour
         positionLastFrame = transform.position;
         clackSource = GetComponent<AudioSource>();
         clacks = Resources.LoadAll<AudioClip>("Audio/Clacks");
+        cueStrike = Resources.Load<AudioClip>("Audio/cueStrike");
     }
 
     private void FixedUpdate()
