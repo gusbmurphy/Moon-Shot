@@ -13,7 +13,8 @@ public class TurnManager : MonoBehaviour
     {
         AwaitingHit,
         AwaitingTurnCompletion,
-        SettingUpNextTurn
+        SettingUpNextTurn,
+        LevelComplete
     }
 
     public TurnStage _currentStage = TurnStage.AwaitingHit;
@@ -168,6 +169,7 @@ public class TurnManager : MonoBehaviour
             if (SceneManager.GetActiveScene().buildIndex + 1 <
                 SceneManager.sceneCountInBuildSettings)
             {
+                CurrentStage = TurnStage.LevelComplete;
                 Cursor.lockState = CursorLockMode.None;
                 nextLevelButton.gameObject.SetActive(true);
                 completionText.gameObject.SetActive(true);
