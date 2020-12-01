@@ -84,8 +84,13 @@ public class CelestialBody : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //clackSource.PlayOneShot(clackSource.clip,1);
-        clackSource.PlayOneShot(clacks[Random.Range(0,clacks.Length)], Random.Range(0.5f,1.0f));
+        float speed = rb.velocity.magnitude;
+        if(speed > 15.0f) {
+            speed = 15.0f;
+        }
+
+        clackSource.PlayOneShot(clacks[Random.Range(0,clacks.Length)], (speed/15.0f));
+        Debug.Log("Velocity = " + rb.velocity.magnitude.ToString());
 
         CelestialBody otherBody = collision.gameObject.GetComponent<CelestialBody>();
         if (otherBody != null)
