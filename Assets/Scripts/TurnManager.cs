@@ -13,7 +13,9 @@ public class TurnManager : MonoBehaviour
     {
         AwaitingHit,
         AwaitingTurnCompletion,
-        SettingUpNextTurn
+        SettingUpNextTurn,
+        LevelComplete,
+        GameComplete
     }
 
     public TurnStage _currentStage = TurnStage.AwaitingHit;
@@ -29,8 +31,7 @@ public class TurnManager : MonoBehaviour
                     hitController.SetCueToTurnStart();
                     shouldLerpCam = true;
                     lerpTarget = cue.cameraSocket;
-                    initialCamPosition = cam.transform.position;
-                    initialCamRotation = cam.transform.rotation;
+                    initialCamPosition = camArm.transform.position;
                     camLerpT = 0f;
                     break;
                 case TurnStage.AwaitingHit:
@@ -42,16 +43,20 @@ public class TurnManager : MonoBehaviour
 
     public float movementThreshhold = 0.01f;
     public Text turnText;
-    public Text objectivesText;
+    //public Text objectivesText;
     private HitController hitController;
     public Text completionText;
     public Button nextLevelButton;
-    public Transform camSocket;
+    public Text gameCompletionText;
+    //public Transform camSocket;
+
+    public Animator transition;
+    public float transitionTime = 1f;
 
     private Cue cue;
 
     private ObjectiveDefinition[] objectives;
-    private Camera cam;
+    private GameObject camArm;
 
     private GameObject cueBall;
 
@@ -67,6 +72,15 @@ public class TurnManager : MonoBehaviour
     }
 
     private CelestialBody[] bodies;
+
+    private GameObject levelTransitionAudio;
+
+    public AudioClip levelResetAudioClip;
+    private GameObject levelResetAudio;
+
+    GameObject ambientMusic;
+
+    public AudioClip gameCompletionAudioClip;
 
     private void Start()
     {
@@ -87,9 +101,33 @@ public class TurnManager : MonoBehaviour
 
         completionText.gameObject.SetActive(false);
         nextLevelButton.gameObject.SetActive(false);
+        gameCompletionText.gameObject.SetActive(false);
 
-        cam = Camera.main;
+        camArm = GameObject.FindGameObjectWithTag("CameraArm");
         cueBall = GameObject.FindGameObjectWithTag("CueBall");
+        levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
+
+        // Find the music objects, and make sure it's not destroyed on load of next scene.
+        ambientMusic = GameObject.FindGameObjectWithTag("AmbientMusic");
+        DontDestroyOnLoad(ambientMusic);
+
+        levelResetAudio = GameObject.FindGameObjectWithTag("LevelResetAudio");
+        if (levelResetAudio == null) CreateLevelResetAudioObject();
+        DontDestroyOnLoad(levelResetAudio);
+
+        levelTransitionAudio = GameObject.FindGameObjectWithTag("LevelTransitionAudio");
+
+        DontDestroyOnLoad(levelTransitionAudio); 
+    }
+
+    private void CreateLevelResetAudioObject()
+    {
+        levelResetAudio = new GameObject("LevelResetAudio");
+        levelResetAudio.tag = "LevelResetAudio";
+        AudioSource audioSource = levelResetAudio.AddComponent<AudioSource>();
+        audioSource.clip = levelResetAudioClip;
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
     }
 
     private void Update()
@@ -127,7 +165,7 @@ public class TurnManager : MonoBehaviour
             camLerpT < 0f ? 0f :
             camLerpT / cameraLerpTime;
 
-        cam.transform.position = Vector3.Lerp(initialCamPosition,
+        camArm.transform.position = Vector3.Lerp(initialCamPosition,
             target.position, lerpCompletion);
 
         if (lerpCompletion >= 1f)
@@ -150,18 +188,18 @@ public class TurnManager : MonoBehaviour
 
     private void UpdateObjectives()
     {
-        String description = "";
+        //String description = "";
 
-        for (int i = 0; i < objectives.Length; i++)
-        {
-            ObjectiveDefinition objective = objectives[i];
-            if (objective.IsCompleted) description += "X";
-            description += "Get " + objective.gameObject.name +
-                " to " + objective.goal.gameObject.name;
-            if (i + 1 != objectives.Length) description += Environment.NewLine;
-        }
+        //for (int i = 0; i < objectives.Length; i++)
+        //{
+        //    ObjectiveDefinition objective = objectives[i];
+        //    if (objective.IsCompleted) description += "X";
+        //    description += "Get " + objective.gameObject.name +
+        //        " to " + objective.goal.gameObject.name;
+        //    if (i + 1 != objectives.Length) description += Environment.NewLine;
+        //}
 
-        objectivesText.text = description;
+        //objectivesText.text = description;
 
         if (Array.TrueForAll<ObjectiveDefinition>(objectives,
             objective => objective.IsCompleted))
@@ -169,6 +207,7 @@ public class TurnManager : MonoBehaviour
             if (SceneManager.GetActiveScene().buildIndex + 1 <
                 SceneManager.sceneCountInBuildSettings)
             {
+                CurrentStage = TurnStage.LevelComplete;
                 Cursor.lockState = CursorLockMode.None;
                 nextLevelButton.gameObject.SetActive(true);
                 completionText.gameObject.SetActive(true);
@@ -183,13 +222,42 @@ public class TurnManager : MonoBehaviour
         Turn++;
     }
 
-    public void RestartLevel() =>
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    public void RestartLevel()
+    {
+        levelResetAudio.GetComponent<AudioSource>().Play();
+        StartCoroutine(StartLevelTransition(0));
+    }
 
-    public void GoToNextLevel() =>
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    public void GoToNextLevel()
+    {
+        levelTransitionAudio.GetComponent<AudioSource>().Play();
+        StartCoroutine(StartLevelTransition(1));
+    }
 
-    private void GameFinished() => throw new NotImplementedException();
+    IEnumerator StartLevelTransition(int i)
+    {
+        transition.SetTrigger("Start");
+
+        yield return new WaitForSeconds(1f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + i);
+    }
+
+    private void GameFinished()
+    {
+        CurrentStage = TurnStage.GameComplete;
+        //transition.SetTrigger("Start");
+        gameCompletionText.gameObject.SetActive(true);
+
+        GameObject gameCompletionAudio = new GameObject("GameCompletionAudio");
+        AudioSource audioSource = gameCompletionAudio.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.clip = gameCompletionAudioClip;
+        audioSource.Play();
+
+        if (ambientMusic != null) GameObject.Destroy(ambientMusic);
+    }
 
     private IEnumerator CompleteLevelWithDelay()
     {

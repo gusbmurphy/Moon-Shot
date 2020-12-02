@@ -82,6 +82,11 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 1548053940937960809, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66,
+        type: 3}
+      propertyPath: m_Mass
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1548053940937960810, guid: 2d5444dd8e4a4424c9e5a7a7f8768a66,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

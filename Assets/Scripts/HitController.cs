@@ -65,7 +65,7 @@ public class HitController : MonoBehaviour
      * to the target by clicking on it. */
     public bool indicatorLocked = false;
 
-    private Camera cam;
+    private GameObject camArm;
 
     private void SetAimLine()
     {
@@ -91,10 +91,10 @@ public class HitController : MonoBehaviour
 
         cue = Instantiate(cueToInstantiate);
 
-        cam = Camera.main;
+        camArm = GameObject.FindGameObjectWithTag("CameraArm");
 
         SetCueToTurnStart();
-        cam.transform.position = cue.cameraSocket.position;
+        camArm.transform.position = cue.cameraSocket.position;
 
         lineRenderer.gameObject.SetActive(false);
         //InstantiateTrajectoryIndicators();
@@ -107,7 +107,10 @@ public class HitController : MonoBehaviour
     public void SetCueToTurnStart()
     {
         cue.transform.position = cueBall.transform.position;
-        cue.transform.rotation = cueBall.transform.rotation;
+        Vector3 cueRotation = cueBall.transform.rotation.eulerAngles;
+        cueRotation.x = 0.0f;
+        cueRotation.z = 0.0f;
+        cue.transform.eulerAngles = cueRotation;
 
         cue.SetModelPositionBetweenMinMax(0);
     }
@@ -126,7 +129,7 @@ public class HitController : MonoBehaviour
     {
         if (turnManager.CurrentStage == TurnManager.TurnStage.AwaitingHit)
         {
-            if (!isTrackingForce) HandleRotationInput();
+            HandleRotationInput();
             HandleForceInput();
         }
 
@@ -154,9 +157,11 @@ public class HitController : MonoBehaviour
         //}
     }
 
+    private bool isAdjustingPitch = false;
+
     private void HandleForceInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isAdjustingPitch)
         {
             isTrackingForce = true;
         }
@@ -198,11 +203,13 @@ public class HitController : MonoBehaviour
         // If the user is holding the right click, we adjust pitch...
         if (Input.GetMouseButton(1) && !isResetingPitch)
         {
+            isAdjustingPitch = true;
             float yInput = Input.GetAxis("Mouse Y");
             if (yInput > 0 || yInput < 0)
             {
-                cue.transform.Rotate(yInput * ySensitivity, 0, 0);
-                cam.transform.position = cue.cameraSocket.position;
+                float yRotation = yInput * ySensitivity;
+                cue.transform.Rotate(yRotation, 0, 0);
+                camArm.transform.position = cue.cameraSocket.position;
             }
         }
         // Otherwise we rotate...
@@ -213,8 +220,14 @@ public class HitController : MonoBehaviour
             {
                 //cue.transform.Rotate(Vector3.up, -xInput * xSensitivity);
                 cue.transform.RotateAround(cueBall.transform.position, Vector3.up, -xInput * xSensitivity);
-                cam.transform.position = cue.cameraSocket.position;
+                camArm.transform.position = cue.cameraSocket.position;
             }
+        }
+
+        // If the user has released RMB we need to stop adjusting pitch
+        if (Input.GetMouseButtonUp(1) && isAdjustingPitch)
+        {
+            isAdjustingPitch = false;
         }
     }
 
